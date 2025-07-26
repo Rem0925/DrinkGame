@@ -1,0 +1,259 @@
+body {
+        font-family: "Montserrat", sans-serif;
+        background-color: #132f59;
+        color: white;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      .main-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 1.25rem;
+      }
+      #logo {
+        max-width: 150px;
+        height: auto;
+        cursor: pointer;
+      }
+      .btn {
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-align: center;
+        width: 100%;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+        border: none;
+      }
+      .btn-primary {
+        background-color: #0b7dda;
+        color: white;
+      }
+      .btn-primary:hover:not(:disabled) {
+        background-color: #0a6bb5;
+      }
+      .btn-secondary {
+        background-color: #98c1f2;
+        color: #132f59;
+      }
+      .btn-secondary:hover:not(:disabled) {
+        background-color: #82b0e3;
+      }
+      .btn-danger {
+        background-color: #e53e3e;
+        color: white;
+      }
+      .btn-danger:hover:not(:disabled) {
+        background-color: #c53030;
+      }
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .btn:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+      .gender-tab.active {
+        background-color: #132f59;
+        color: white;
+        border: #98c1f2 1px solid;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+      .shake {
+        animation: shake 0.5s ease-in-out;
+      }
+      .player-list {
+        max-height: 40vh;
+        overflow-y: auto;
+        background-color: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 15px;
+      }
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        text-align: center;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .action-buttons button {
+        background: none;
+        border: none;
+        font-size: 60px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+      }
+      .action-buttons .red {
+        color: #ff6b6b;
+      }
+      .action-buttons .green {
+        color: #0bda61;
+      }
+      .action-buttons button:hover {
+        transform: scale(1.1);
+      }
+      .page {
+        display: none;
+      }
+      .page.active {
+        display: block;
+      }
+      .current-player-header {
+        text-align: center;
+        font-weight: 800;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .header-icon {
+        position: absolute;
+        top: 20px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .header-icon:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+      .settings-btn {
+        right: 20px;
+      }
+      .back-btn {
+        left: 20px;
+      }
+      .wheel-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto 20px auto;
+        overflow: hidden;
+        height: 150px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px;
+        border: 2px solid #0b7dda;
+        -webkit-mask-image: linear-gradient(
+          to right,
+          transparent,
+          black 20%,
+          black 80%,
+          transparent
+        );
+        mask-image: linear-gradient(
+          to right,
+          transparent,
+          black 20%,
+          black 80%,
+          transparent
+        );
+      }
+      .wheel-strip {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        will-change: transform;
+      }
+      .wheel-card {
+        flex-shrink: 0;
+        width: 120px;
+        height: 100px;
+        margin: 0 8px;
+        background: #fff;
+        color: #132f59;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 5px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        border: 3px solid transparent;
+      }
+      .wheel-arrow {
+        position: absolute;
+        top: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-top: 15px solid #0b7dda;
+        z-index: 10;
+      }
+      .wheel-arrow::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        left: -12px;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 12px solid #132f59;
+      }
+
+      /* Estilos para la página de configuración */
+      .settings-tab {
+        border-bottom: 4px solid transparent;
+      }
+      .settings-tab.active {
+        border-bottom-color: #0b7dda;
+      }
+      .settings-content {
+        display: none;
+      }
+      .settings-content.active {
+        display: block;
+      }
+      .editable-list-item {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Estilos para el selector de idioma */
+      .flags {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 75px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      #flag-item {
+        cursor: pointer;
+        width: 30px;
+      }
