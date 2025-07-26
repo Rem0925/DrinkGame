@@ -1,555 +1,1039 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Juego de Beber</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #132f59;
-            color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .main-container { max-width: 500px; margin: 0 auto; padding: 1.25rem; }
-        #logo { max-width: 150px; height: auto; cursor: pointer; }
-        .btn { padding: 14px 20px; border-radius: 12px; font-weight: 700; text-align: center; width: 100%; font-size: 1.1rem; transition: all 0.3s ease; margin-bottom: 15px; border: none; }
-        .btn-primary { background-color: #0b7dda; color: white; }
-        .btn-primary:hover:not(:disabled) { background-color: #0a6bb5; }
-        .btn-secondary { background-color: #98c1f2; color: #132f59; }
-        .btn-secondary:hover:not(:disabled) { background-color: #82b0e3; }
-        .btn-danger { background-color: #e53e3e; color: white; }
-        .btn-danger:hover:not(:disabled) { background-color: #c53030; }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn:active:not(:disabled) { transform: scale(0.98); }
-        .gender-tab.active { background-color: #132f59; color: white; border: #98c1f2 1px solid; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); } 20%, 40%, 60%, 80% { transform: translateX(5px); } }
-        .shake { animation: shake 0.5s ease-in-out; }
-        .player-list { max-height: 40vh; overflow-y: auto; background-color: rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 10px; margin-bottom: 15px; }
-        .question-container { background-color: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; min-height: 120px; display: flex; align-items: center; justify-content: center; }
-        .action-buttons button { background: none; border: none; font-size: 60px; cursor: pointer; transition: all 0.3s; text-shadow: 2px 2px 6px rgba(0,0,0,0.4); }
-        .action-buttons .red { color: #ff6b6b; }
-        .action-buttons .green { color: #0bda61; }
-        .action-buttons button:hover { transform: scale(1.1); }
-        .page { display: none; }
-        .page.active { display: block; }
-        .current-player-header { text-align: center; font-weight: 800; font-size: 2rem; margin-bottom: 20px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .header-icon { position: absolute; top: 20px; background-color: rgba(255, 255, 255, 0.2); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: background-color 0.3s; }
-        .header-icon:hover { background-color: rgba(255, 255, 255, 0.3); }
-        .settings-btn { right: 20px; }
-        .back-btn { left: 20px; }
-        .wheel-container { position: relative; width: 100%; max-width: 400px; margin: 0 auto 20px auto; overflow: hidden; height: 150px; background: rgba(0,0,0,0.2); border-radius: 16px; border: 2px solid #0b7dda; -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent); mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent); }
-        .wheel-strip { display: flex; align-items: center; height: 100%; will-change: transform; }
-        .wheel-card { flex-shrink: 0; width: 120px; height: 100px; margin: 0 8px; background: #fff; color: #132f59; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 5px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 3px solid transparent; }
-        .wheel-arrow { position: absolute; top: -2px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 15px solid #0b7dda; z-index: 10; }
-        .wheel-arrow::after { content: ''; position: absolute; bottom: 2px; left: -12px; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 12px solid #132f59; }
-        
-        /* Estilos para la página de configuración */
-        .settings-tab { border-bottom: 4px solid transparent; }
-        .settings-tab.active { border-bottom-color: #0b7dda; }
-        .settings-content { display: none; }
-        .settings-content.active { display: block; }
-        .editable-list-item { background-color: rgba(255, 255, 255, 0.1); }
-    </style>
-</head>
-<body class="bg-gray-900">
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: #132f59;
+        color: white;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      .main-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 1.25rem;
+      }
+      #logo {
+        max-width: 150px;
+        height: auto;
+        cursor: pointer;
+      }
+      .btn {
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-align: center;
+        width: 100%;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+        border: none;
+      }
+      .btn-primary {
+        background-color: #0b7dda;
+        color: white;
+      }
+      .btn-primary:hover:not(:disabled) {
+        background-color: #0a6bb5;
+      }
+      .btn-secondary {
+        background-color: #98c1f2;
+        color: #132f59;
+      }
+      .btn-secondary:hover:not(:disabled) {
+        background-color: #82b0e3;
+      }
+      .btn-danger {
+        background-color: #e53e3e;
+        color: white;
+      }
+      .btn-danger:hover:not(:disabled) {
+        background-color: #c53030;
+      }
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .btn:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+      .gender-tab.active {
+        background-color: #132f59;
+        color: white;
+        border: #98c1f2 1px solid;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+      .shake {
+        animation: shake 0.5s ease-in-out;
+      }
+      .player-list {
+        max-height: 40vh;
+        overflow-y: auto;
+        background-color: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 15px;
+      }
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        text-align: center;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .action-buttons button {
+        background: none;
+        border: none;
+        font-size: 60px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+      }
+      .action-buttons .red {
+        color: #ff6b6b;
+      }
+      .action-buttons .green {
+        color: #0bda61;
+      }
+      .action-buttons button:hover {
+        transform: scale(1.1);
+      }
+      .page {
+        display: none;
+      }
+      .page.active {
+        display: block;
+      }
+      .current-player-header {
+        text-align: center;
+        font-weight: 800;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .header-icon {
+        position: absolute;
+        top: 20px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .header-icon:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+      .settings-btn {
+        right: 20px;
+      }
+      .back-btn {
+        left: 20px;
+      }
+      .wheel-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto 20px auto;
+        overflow: hidden;
+        height: 150px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px;
+        border: 2px solid #0b7dda;
+        -webkit-mask-image: linear-gradient(
+          to right,
+          transparent,
+          black 20%,
+          black 80%,
+          transparent
+        );
+        mask-image: linear-gradient(
+          to right,
+          transparent,
+          black 20%,
+          black 80%,
+          transparent
+        );
+      }
+      .wheel-strip {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        will-change: transform;
+      }
+      .wheel-card {
+        flex-shrink: 0;
+        width: 120px;
+        height: 100px;
+        margin: 0 8px;
+        background: #fff;
+        color: #132f59;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 5px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        border: 3px solid transparent;
+      }
+      .wheel-arrow {
+        position: absolute;
+        top: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-top: 15px solid #0b7dda;
+        z-index: 10;
+      }
+      .wheel-arrow::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        left: -12px;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 12px solid #132f59;
+      }
+
+      /* Estilos para la página de configuración */
+      .settings-tab {
+        border-bottom: 4px solid transparent;
+      }
+      .settings-tab.active {
+        border-bottom-color: #0b7dda;
+      }
+      .settings-content {
+        display: none;
+      }
+      .settings-content.active {
+        display: block;
+      }
+      .editable-list-item {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Estilos para el selector de idioma */
+      .flags {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 75px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      #flag-item {
+        cursor: pointer;
+        width: 30px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900">
     <header class="text-center p-4 border-b border-gray-700 relative">
-        <div id="back-btn" class="header-icon back-btn hidden">
-            <i class="fas fa-arrow-left"></i>
-        </div>
-        <svg id="logo" viewBox="0 0 200 50" class="mx-auto" fill="white">
-            <text x="10" y="40" font-family="Montserrat, sans-serif" font-size="30" font-weight="bold">DRINK<tspan fill="#0b7dda">UP</tspan></text>
-        </svg>
-        <div id="settings-btn" class="header-icon settings-btn">
-            <i class="fas fa-cog"></i>
-        </div>
+      <div id="back-btn" class="header-icon back-btn hidden">
+        <i class="fas fa-arrow-left"></i>
+      </div>
+      <svg id="logo" viewBox="0 0 200 50" class="mx-auto" fill="white">
+        <text
+          x="10"
+          y="40"
+          font-family="Montserrat, sans-serif"
+          font-size="30"
+          font-weight="bold"
+        >
+          DRINK
+          <tspan fill="#0b7dda">UP</tspan>
+        </text>
+      </svg>
+      <div id="settings-btn" class="header-icon settings-btn">
+        <i class="fas fa-cog"></i>
+      </div>
     </header>
 
     <div class="main-container">
-        <!-- PÁGINA 1: AÑADIR JUGADORES -->
-        <div id="add-players-page" class="page active">
-            <div class="mb-4">
-                <input type="text" id="player-name-input" placeholder="Nombre del jugador" class="w-full p-3 rounded-lg border-2 border-gray-600 bg-gray-800 text-white focus:outline-none focus:border-blue-500">
-            </div>
-            <div class="flex mb-4 rounded-lg overflow-hidden border border-gray-500">
-                <div class="gender-tab flex-1 p-2 text-center cursor-pointer bg-gray-700 active" data-gender="hombre">HOMBRE</div>
-                <div class="gender-tab flex-1 p-2 text-center cursor-pointer bg-gray-700" data-gender="mujer">MUJER</div>
-            </div>
-            <button id="add-player-btn" class="btn btn-secondary">AÑADIR JUGADOR</button>
-            <div class="player-list" id="player-list-container"></div>
-            <button id="start-game-btn" class="btn btn-primary" disabled>COMENZAR</button>
+      <!-- PÁGINA 1: AÑADIR JUGADORES -->
+      <div id="add-players-page" class="page active">
+        <div class="mb-4">
+          <input
+            type="text"
+            id="player-name-input"
+            placeholder="Nombre del jugador"
+            class="w-full p-3 rounded-lg border-2 border-gray-600 bg-gray-800 text-white focus:outline-none focus:border-blue-500"
+          />
         </div>
-        
-        <!-- PÁGINA 2: JUEGO (PREGUNTA) -->
-        <div id="game-question-page" class="page">
-            <h2 id="current-player-question" class="current-player-header"></h2>
-            <div class="question-container"><p id="question-text" class="text-xl"></p></div>
-            <div class="action-buttons flex justify-center gap-12">
-                 <button id="punishment-btn" class="red"><i class="fa-solid fa-circle-xmark"></i></button>
-                 <button id="next-player-btn" class="green"><i class="fa-solid fa-circle-check"></i></button>
+        <div
+          class="flex mb-4 rounded-lg overflow-hidden border border-gray-500"
+        >
+          <div
+            class="gender-tab flex-1 p-2 text-center cursor-pointer bg-gray-700 active"
+            data-gender="hombre"
+            data-section="ui"
+            data-value="male"
+          >
+            HOMBRE
+          </div>
+          <div
+            class="gender-tab flex-1 p-2 text-center cursor-pointer bg-gray-700"
+            data-gender="mujer"
+            data-section="ui"
+            data-value="female"
+          >
+            MUJER
+          </div>
+        </div>
+        <button id="add-player-btn" class="btn btn-secondary" data-section="ui" data-value="addPlayer">
+          AÑADIR JUGADOR
+        </button>
+        <div class="player-list" id="player-list-container"></div>
+        <button id="start-game-btn" class="btn btn-primary" disabled data-section="ui" data-value="startGame">
+          COMENZAR
+        </button>
+      </div>
+
+      <!-- PÁGINA 2: JUEGO (PREGUNTA) -->
+      <div id="game-question-page" class="page">
+        <h2 id="current-player-question" class="current-player-header"></h2>
+        <div class="question-container">
+          <p id="question-text" class="text-xl"></p>
+        </div>
+        <div class="action-buttons flex justify-center gap-12">
+          <button id="punishment-btn" class="red">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+          <button id="next-player-btn" class="green">
+            <i class="fa-solid fa-circle-check"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- PÁGINA 3: JUEGO (RULETA) -->
+      <div id="game-roulette-page" class="page">
+        <h2 id="current-player-roulette" class="current-player-header"></h2>
+        <div class="wheel-container">
+          <div class="wheel-arrow"></div>
+          <div id="wheel-strip" class="wheel-strip"></div>
+        </div>
+        <button id="spin-btn" class="btn btn-primary mb-4" data-section="ui" data-value="spin">GIRAR</button>
+        <div id="punishment-result-container" class="question-container hidden">
+          <p id="punishment-result-text" class="text-xl font-bold"></p>
+        </div>
+        <div class="action-buttons flex justify-center mt-4">
+          <button id="confirm-punishment-btn" class="green hidden">
+            <i class="fa-solid fa-circle-check"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- PÁGINA 4: CONFIGURACIÓN -->
+      <div id="settings-page" class="page">
+        <h2 class="text-3xl font-bold text-center mb-6" data-section="ui"
+            data-value="settings">Configuración</h2>
+        <!-- SELECTOR DE IDIOMA -->
+        <nav id="flags" class="flags" >
+            <div id="flag-item" data-language="es">
+                <img src="/assets/es.png" alt="">
             </div>
+            <div id="flag-item" data-language="en">
+                <img src="/assets/en.png" alt="">
+            </div>
+        </nav>
+        <!-- Pestañas para Preguntas/Castigos -->
+        <div class="flex justify-center border-b-2 border-gray-700 mb-4">
+          <button
+            data-target="questions"
+            class="settings-tab-btn settings-tab active flex-1 py-2 font-semibold"
+            data-section="ui"
+            data-value="questionsTab"
+          >
+            Preguntas
+          </button>
+          <button
+            data-target="punishments"
+            class="settings-tab-btn settings-tab flex-1 py-2 font-semibold"
+            data-section="ui"
+            data-value="punishmentsTab"
+          >
+            Castigos
+          </button>
         </div>
 
-        <!-- PÁGINA 3: JUEGO (RULETA) -->
-        <div id="game-roulette-page" class="page">
-            <h2 id="current-player-roulette" class="current-player-header"></h2>
-            <div class="wheel-container">
-                <div class="wheel-arrow"></div>
-                <div id="wheel-strip" class="wheel-strip"></div>
+        <!-- Contenido de Preguntas -->
+        <div id="settings-content-questions" class="settings-content active">
+          <div
+            id="questions-list"
+            class="space-y-2 mb-4 max-h-64 overflow-y-auto p-1"
+          ></div>
+          <div class="bg-gray-800 p-4 rounded-lg">
+            <h3 id="question-form-title" class="text-lg font-semibold mb-2" data-section="ui" data-value="addQuestion">
+              Añadir Pregunta
+            </h3>
+            <textarea
+              id="question-input"
+              placeholder="Escribe la pregunta..."
+              class="w-full p-2 rounded bg-gray-700 border-gray-600 border-2"
+            ></textarea>
+            <div id="question-form-buttons" class="flex gap-2 mt-2">
+              <button id="add-question-btn" class="btn btn-secondary flex-1" data-section="ui" data-value="add">
+                Añadir
+              </button>
             </div>
-            <button id="spin-btn" class="btn btn-primary mb-4">GIRAR</button>
-            <div id="punishment-result-container" class="question-container hidden"><p id="punishment-result-text" class="text-xl font-bold"></p></div>
-            <div class="action-buttons flex justify-center mt-4">
-                 <button id="confirm-punishment-btn" class="green hidden"><i class="fa-solid fa-circle-check"></i></button>
-            </div>
+          </div>
         </div>
 
-        <!-- PÁGINA 4: CONFIGURACIÓN -->
-        <div id="settings-page" class="page">
-            <h2 class="text-3xl font-bold text-center mb-6">Configuración</h2>
-            <!-- Pestañas para Preguntas/Castigos -->
-            <div class="flex justify-center border-b-2 border-gray-700 mb-4">
-                <button data-target="questions" class="settings-tab-btn settings-tab active flex-1 py-2 font-semibold">Preguntas</button>
-                <button data-target="punishments" class="settings-tab-btn settings-tab flex-1 py-2 font-semibold">Castigos</button>
+        <!-- Contenido de Castigos -->
+        <div id="settings-content-punishments" class="settings-content">
+          <div
+            id="punishments-list"
+            class="space-y-2 mb-4 max-h-64 overflow-y-auto p-1"
+          ></div>
+          <div class="bg-gray-800 p-4 rounded-lg">
+            <h3 id="punishment-form-title" class="text-lg font-semibold mb-2" data-section="ui" data-value="addPunishment">
+              Añadir Castigo
+            </h3>
+            <textarea
+              id="punishment-input"
+              placeholder="Escribe el castigo..."
+              class="w-full p-2 rounded bg-gray-700 border-gray-600 border-2"
+            ></textarea>
+            <label class="flex items-center mt-2 text-sm">
+                <input
+                type="checkbox"
+                id="requires-opposite-gender-checkbox"
+                class="mr-2 h-4 w-4"
+              /> <p  data-section="ui"
+                data-value="requiresOppositeGender">Requiere otro sexo</p></label
+            >
+            <div id="punishment-form-buttons" class="flex gap-2 mt-2">
+              <button id="add-punishment-btn" class="btn btn-secondary flex-1" data-section="ui" data-value="add">
+                Añadir
+              </button>
             </div>
-
-            <!-- Contenido de Preguntas -->
-            <div id="settings-content-questions" class="settings-content active">
-                <div id="questions-list" class="space-y-2 mb-4 max-h-64 overflow-y-auto p-1"></div>
-                <div class="bg-gray-800 p-4 rounded-lg">
-                    <h3 id="question-form-title" class="text-lg font-semibold mb-2">Añadir Pregunta</h3>
-                    <textarea id="question-input" placeholder="Escribe la pregunta..." class="w-full p-2 rounded bg-gray-700 border-gray-600 border-2"></textarea>
-                    <div id="question-form-buttons" class="flex gap-2 mt-2">
-                         <button id="add-question-btn" class="btn btn-secondary flex-1">Añadir</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenido de Castigos -->
-            <div id="settings-content-punishments" class="settings-content">
-                <div id="punishments-list" class="space-y-2 mb-4 max-h-64 overflow-y-auto p-1"></div>
-                <div class="bg-gray-800 p-4 rounded-lg">
-                    <h3 id="punishment-form-title" class="text-lg font-semibold mb-2">Añadir Castigo</h3>
-                    <textarea id="punishment-input" placeholder="Escribe el castigo..." class="w-full p-2 rounded bg-gray-700 border-gray-600 border-2"></textarea>
-                    <label class="flex items-center mt-2 text-sm"><input type="checkbox" id="requires-opposite-gender-checkbox" class="mr-2 h-4 w-4">Requiere otro sexo</label>
-                    <div id="punishment-form-buttons" class="flex gap-2 mt-2">
-                        <button id="add-punishment-btn" class="btn btn-secondary flex-1">Añadir</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-8">
-                 <button id="reset-defaults-btn" class="btn btn-danger">Resetear a Predeterminados</button>
-            </div>
+          </div>
         </div>
+
+        <div class="mt-8">
+          <button id="reset-defaults-btn" class="btn btn-danger" data-section="ui" data-value="resetDefaults">
+            Resetear a Predeterminados
+          </button>
+        </div>
+      </div>
     </div>
-    
+
     <!-- MODAL DE CONFIRMACIÓN -->
-    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-gray-800 rounded-lg max-w-sm w-full p-6 text-center">
-            <p id="confirmation-text" class="mb-4">¿Estás seguro?</p>
-            <div class="flex justify-center gap-4">
-                <button id="confirm-yes-btn" class="btn btn-danger w-24">Sí</button>
-                <button id="confirm-no-btn" class="btn btn-secondary w-24">No</button>
-            </div>
+    <div
+      id="confirmation-modal"
+      class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden"
+    >
+      <div class="bg-gray-800 rounded-lg max-w-sm w-full p-6 text-center">
+        <p id="confirmation-text" class="mb-4">¿Estás seguro?</p>
+        <div class="flex justify-center gap-4">
+          <button id="confirm-yes-btn" class="btn btn-danger w-24" data-section="ui" data-value="yes">Sí</button>
+          <button id="confirm-no-btn" class="btn btn-secondary w-24" data-section="ui" data-value="no">No</button>
         </div>
+      </div>
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener("DOMContentLoaded", () => {
         // --- ESTADO DEL JUEGO ---
         const gameState = {
-            players: [],
-            currentPlayerIndex: 0,
-            lastPunishmentIndex: null,
-            editing: { type: null, index: null }, // Para saber si estamos editando algo
-            questions: [],
-            punishments: [],
-            defaultQuestions: [
-                "¿Quién es más probable que haga algo vergonzoso cuando está borracho?",
-                "¿Quién es más probable que acabe en otra ciudad después de una noche loca?",
-                "¿Quién es más probable que se despierte con un tatuaje nuevo?",
-                "¿Quién es más probable que pierda su teléfono en una fiesta?",
-                "¿Quién aguantaría más tiempo sin beber alcohol?",
-                "¿Quién es más probable que llame a su ex borracho?",
-            ],
-            defaultPunishments: [
-                { text: "Bebe 2 tragos", requiresOppositeGender: false },
-                { text: "Bebe un chupito", requiresOppositeGender: false },
-                { text: "Cuenta un secreto vergonzoso", requiresOppositeGender: false },
-                { text: "Imita a otro jugador", requiresOppositeGender: true },
-                { text: "Haz 10 flexiones", requiresOppositeGender: false },
-                { text: "Baila durante 30 segundos", requiresOppositeGender: false },
-            ]
+          players: [],
+          currentPlayerIndex: 0,
+          lastPunishmentIndex: null,
+          editing: { type: null, index: null }, // Para saber si estamos editando algo
+          questions: [],
+          punishments: [],
+          lg:[],
+          defaultQuestions: [
+            "¿Quién es más probable que haga algo vergonzoso cuando está borracho?",
+            "¿Quién es más probable que acabe en otra ciudad después de una noche loca?",
+            "¿Quién es más probable que se despierte con un tatuaje nuevo?",
+            "¿Quién es más probable que pierda su teléfono en una fiesta?",
+            "¿Quién aguantaría más tiempo sin beber alcohol?",
+            "¿Quién es más probable que llame a su ex borracho?",
+          ],
+          defaultPunishments: [
+            { text: "Bebe 2 tragos", requiresOppositeGender: false },
+            { text: "Bebe un chupito", requiresOppositeGender: false },
+            {
+              text: "Cuenta un secreto vergonzoso",
+              requiresOppositeGender: false,
+            },
+            { text: "Imita a otro jugador", requiresOppositeGender: true },
+            { text: "Haz 10 flexiones", requiresOppositeGender: false },
+            {
+              text: "Baila durante 30 segundos",
+              requiresOppositeGender: false,
+            },
+          ],
         };
 
+        const flags_element = document.getElementById("flags");
+        const textsToChange = document.querySelectorAll("[data-section='ui']");
+        
+        const chanceLanguage = async language =>{
+            
+            const requestJSON = await fetch(`./lang/${language}.json`);
+            const text = await requestJSON.json();
+            gameState.lg = text["ui"];
+            console.log(gameState.lg);
+            // Actualizar las preguntas y castigos predeterminados
+            gameState.defaultQuestions = text["questions"];
+            gameState.defaultPunishments = text["punishments"];
+            gameState.questions = [...gameState.defaultQuestions];
+            gameState.punishments = [...gameState.defaultPunishments];
+            renderSettings();
+            for(const textToChange of textsToChange){
+                const section = textToChange.dataset.section;
+                const value = textToChange.dataset.value;
+                textToChange.innerHTML = text[section][value];
+            }
+            initialize();
+        };
+        flags_element.addEventListener("click", (e)=>{
+            chanceLanguage(e.target.parentElement.dataset.language);
+        });
         // --- ELEMENTOS DEL DOM ---
         const pages = {
-            addPlayers: document.getElementById('add-players-page'),
-            gameQuestion: document.getElementById('game-question-page'),
-            gameRoulette: document.getElementById('game-roulette-page'),
-            settings: document.getElementById('settings-page'),
+          addPlayers: document.getElementById("add-players-page"),
+          gameQuestion: document.getElementById("game-question-page"),
+          gameRoulette: document.getElementById("game-roulette-page"),
+          settings: document.getElementById("settings-page"),
         };
-        const backBtn = document.getElementById('back-btn');
-        const settingsBtn = document.getElementById('settings-btn');
-        const confirmModal = document.getElementById('confirmation-modal');
+        const backBtn = document.getElementById("back-btn");
+        const settingsBtn = document.getElementById("settings-btn");
+        const confirmModal = document.getElementById("confirmation-modal");
+
 
         // --- FUNCIONES DE NAVEGACIÓN ---
         const showPage = (pageId) => {
-            Object.values(pages).forEach(page => page.classList.remove('active'));
-            pages[pageId].classList.add('active');
-            backBtn.classList.toggle('hidden', pageId !== 'settings');
-            settingsBtn.classList.toggle('hidden', pageId === 'settings');
+          Object.values(pages).forEach((page) =>
+            page.classList.remove("active")
+          );
+          pages[pageId].classList.add("active");
+          backBtn.classList.toggle("hidden", pageId !== "settings");
+          settingsBtn.classList.toggle("hidden", pageId === "settings");
         };
 
         // --- LÓGICA PRINCIPAL DEL JUEGO (sin cambios) ---
-        const playerNameInput = document.getElementById('player-name-input');
-        const genderTabs = document.querySelectorAll('.gender-tab');
-        const addPlayerBtn = document.getElementById('add-player-btn');
-        const playerListContainer = document.getElementById('player-list-container');
-        const startGameBtn = document.getElementById('start-game-btn');
-        const logo = document.getElementById('logo');
-        const currentPlayerQuestion = document.getElementById('current-player-question');
-        const questionText = document.getElementById('question-text');
-        const nextPlayerBtn = document.getElementById('next-player-btn');
-        const punishmentBtn = document.getElementById('punishment-btn');
-        const currentPlayerRoulette = document.getElementById('current-player-roulette');
-        const wheelStrip = document.getElementById('wheel-strip');
-        const spinBtn = document.getElementById('spin-btn');
-        const punishmentResultContainer = document.getElementById('punishment-result-container');
-        const punishmentResultText = document.getElementById('punishment-result-text');
-        const confirmPunishmentBtn = document.getElementById('confirm-punishment-btn');
-        
+        const playerNameInput = document.getElementById("player-name-input");
+        const genderTabs = document.querySelectorAll(".gender-tab");
+        const addPlayerBtn = document.getElementById("add-player-btn");
+        const playerListContainer = document.getElementById(
+          "player-list-container"
+        );
+        const startGameBtn = document.getElementById("start-game-btn");
+        const logo = document.getElementById("logo");
+        const currentPlayerQuestion = document.getElementById(
+          "current-player-question"
+        );
+        const questionText = document.getElementById("question-text");
+        const nextPlayerBtn = document.getElementById("next-player-btn");
+        const punishmentBtn = document.getElementById("punishment-btn");
+        const currentPlayerRoulette = document.getElementById(
+          "current-player-roulette"
+        );
+        const wheelStrip = document.getElementById("wheel-strip");
+        const spinBtn = document.getElementById("spin-btn");
+        const punishmentResultContainer = document.getElementById(
+          "punishment-result-container"
+        );
+        const punishmentResultText = document.getElementById(
+          "punishment-result-text"
+        );
+        const confirmPunishmentBtn = document.getElementById(
+          "confirm-punishment-btn"
+        );
+
         const renderPlayerList = () => {
-            playerListContainer.innerHTML = '';
-            if (gameState.players.length === 0) {
-                playerListContainer.innerHTML = `<p class="text-center p-4 text-gray-400">Añade de 2 a más jugadores</p>`;
-                return;
-            }
-            gameState.players.forEach((player, index) => {
-                const playerEl = document.createElement('div');
-                playerEl.className = 'p-3 rounded-lg mb-2 bg-gray-700 flex justify-between items-center';
-                const iconClass = player.gender === 'hombre' ? 'fa-mars text-blue-400' : 'fa-venus text-pink-400';
-                playerEl.innerHTML = `<span class="font-semibold flex items-center gap-3"><i class="fas ${iconClass}"></i> ${player.name}</span><button class="remove-player-btn text-red-400 hover:text-red-600" data-index="${index}"><i class="fas fa-times"></i></button>`;
-                playerListContainer.appendChild(playerEl);
+          playerListContainer.innerHTML = "";
+          if (gameState.players.length === 0) {
+            playerListContainer.innerHTML = `<p class="text-center p-4 text-gray-400" data-section="ui" data-value="playerListPlaceholder">${gameState.lg.playerListPlaceholder ?? "Añade de 2 a más jugadores"}</p>`;
+            return;
+          }
+          gameState.players.forEach((player, index) => {
+            const playerEl = document.createElement("div");
+            playerEl.className =
+              "p-3 rounded-lg mb-2 bg-gray-700 flex justify-between items-center";
+            const iconClass =
+              player.gender === "hombre"
+                ? "fa-mars text-blue-400"
+                : "fa-venus text-pink-400";
+            playerEl.innerHTML = `<span class="font-semibold flex items-center gap-3"><i class="fas ${iconClass}"></i> ${player.name}</span><button class="remove-player-btn text-red-400 hover:text-red-600" data-index="${index}"><i class="fas fa-times"></i></button>`;
+            playerListContainer.appendChild(playerEl);
+          });
+          document.querySelectorAll(".remove-player-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              const index = parseInt(e.currentTarget.dataset.index);
+              gameState.players.splice(index, 1);
+              renderPlayerList();
+              updateStartButtonState();
             });
-            document.querySelectorAll('.remove-player-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.currentTarget.dataset.index);
-                    gameState.players.splice(index, 1);
-                    renderPlayerList();
-                    updateStartButtonState();
-                });
-            });
+          });
         };
-        const updateStartButtonState = () => { startGameBtn.disabled = gameState.players.length < 2; };
+        const updateStartButtonState = () => {
+          startGameBtn.disabled = gameState.players.length < 2;
+        };
         const nextRound = () => {
-            const currentPlayer = gameState.players[gameState.currentPlayerIndex];
-            if (gameState.questions.length === 0) {
-                questionText.textContent = "No hay preguntas. ¡Añade algunas en la configuración!";
-            } else {
-                const randomQuestion = gameState.questions[Math.floor(Math.random() * gameState.questions.length)];
-                questionText.textContent = randomQuestion;
-            }
-            currentPlayerQuestion.textContent = currentPlayer.name;
-            showPage('gameQuestion');
+          const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+          if (gameState.questions.length === 0) {
+            questionText.textContent =
+              `${gameState.lg.noQuestions ?? "No hay preguntas. ¡Añade algunas en la configuración!"}`;
+          } else {
+            const randomQuestion =
+              gameState.questions[
+                Math.floor(Math.random() * gameState.questions.length)
+              ];
+            questionText.textContent = randomQuestion;
+          }
+          currentPlayerQuestion.textContent = currentPlayer.name;
+          showPage("gameQuestion");
         };
         const setupRoulette = () => {
-            const currentPlayer = gameState.players[gameState.currentPlayerIndex];
-            currentPlayerRoulette.textContent = currentPlayer.name;
-            punishmentResultContainer.classList.add('hidden');
-            confirmPunishmentBtn.classList.add('hidden');
-            spinBtn.disabled = false;
-            spinBtn.classList.remove('hidden');
-            populateWheel();
-            showPage('gameRoulette');
+          const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+          currentPlayerRoulette.textContent = currentPlayer.name;
+          punishmentResultContainer.classList.add("hidden");
+          confirmPunishmentBtn.classList.add("hidden");
+          spinBtn.disabled = false;
+          spinBtn.classList.remove("hidden");
+          populateWheel();
+          showPage("gameRoulette");
         };
         const populateWheel = () => {
-            wheelStrip.innerHTML = '';
-            if (gameState.punishments.length === 0) return;
-            const wheelItems = Array(5).fill(gameState.punishments).flat();
-            wheelItems.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'wheel-card';
-                card.textContent = p.text;
-                wheelStrip.appendChild(card);
-            });
+          wheelStrip.innerHTML = "";
+          if (gameState.punishments.length === 0) return;
+          const wheelItems = Array(5).fill(gameState.punishments).flat();
+          wheelItems.forEach((p) => {
+            const card = document.createElement("div");
+            card.className = "wheel-card";
+            card.textContent = p.text;
+            wheelStrip.appendChild(card);
+          });
         };
         const spinWheel = () => {
-            spinBtn.disabled = true;
-            const cardWidth = 120 + 16;
-            const numCards = gameState.punishments.length;
-            if (numCards === 0) { 
-                displayPunishmentResult(-1); // Special index for no punishments
-                return;
-            }
-            let availableIndices = [...Array(numCards).keys()];
-            if (gameState.lastPunishmentIndex !== null && numCards > 1) {
-                availableIndices = availableIndices.filter(index => index !== gameState.lastPunishmentIndex);
-            }
-            if (availableIndices.length === 0) { availableIndices = [...Array(numCards).keys()]; }
-            const winningCardIndexInOriginalSet = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-            const initialResetPosition = numCards * cardWidth;
-            wheelStrip.style.transition = 'none';
-            wheelStrip.style.transform = `translateX(-${initialResetPosition}px)`;
-            setTimeout(() => {
-                const targetCardIndex = winningCardIndexInOriginalSet + (numCards * 3);
-                const containerWidth = wheelStrip.parentElement.offsetWidth;
-                const targetPosition = (targetCardIndex * cardWidth) - (containerWidth / 2) + (cardWidth / 2);
-                wheelStrip.style.transition = 'transform 6s cubic-bezier(0.23, 1, 0.32, 1)';
-                wheelStrip.style.transform = `translateX(-${targetPosition}px)`;
-                wheelStrip.addEventListener('transitionend', () => {
-                    displayPunishmentResult(winningCardIndexInOriginalSet);
-                }, { once: true });
-            }, 100);
+          spinBtn.disabled = true;
+          const cardWidth = 120 + 16;
+          const numCards = gameState.punishments.length;
+          if (numCards === 0) {
+            displayPunishmentResult(-1); // Special index for no punishments
+            return;
+          }
+          let availableIndices = [...Array(numCards).keys()];
+          if (gameState.lastPunishmentIndex !== null && numCards > 1) {
+            availableIndices = availableIndices.filter(
+              (index) => index !== gameState.lastPunishmentIndex
+            );
+          }
+          if (availableIndices.length === 0) {
+            availableIndices = [...Array(numCards).keys()];
+          }
+          const winningCardIndexInOriginalSet =
+            availableIndices[
+              Math.floor(Math.random() * availableIndices.length)
+            ];
+          const initialResetPosition = numCards * cardWidth;
+          wheelStrip.style.transition = "none";
+          wheelStrip.style.transform = `translateX(-${initialResetPosition}px)`;
+          setTimeout(() => {
+            const targetCardIndex =
+              winningCardIndexInOriginalSet + numCards * 3;
+            const containerWidth = wheelStrip.parentElement.offsetWidth;
+            const targetPosition =
+              targetCardIndex * cardWidth - containerWidth / 2 + cardWidth / 2;
+            wheelStrip.style.transition =
+              "transform 6s cubic-bezier(0.23, 1, 0.32, 1)";
+            wheelStrip.style.transform = `translateX(-${targetPosition}px)`;
+            wheelStrip.addEventListener(
+              "transitionend",
+              () => {
+                displayPunishmentResult(winningCardIndexInOriginalSet);
+              },
+              { once: true }
+            );
+          }, 100);
         };
         const displayPunishmentResult = (winningIndex) => {
-            if (winningIndex === -1) {
-                punishmentResultText.textContent = "No hay castigos. ¡Todos se salvan!";
-            } else {
-                gameState.lastPunishmentIndex = winningIndex;
-                let punishment = gameState.punishments[winningIndex];
-                let resultText = punishment.text;
-                if (punishment.requiresOppositeGender) {
-                    const currentPlayer = gameState.players[gameState.currentPlayerIndex];
-                    const oppositeGender = currentPlayer.gender === 'hombre' ? 'mujer' : 'hombre';
-                    const potentialPartners = gameState.players.filter(p => p.gender === oppositeGender && p.name !== currentPlayer.name);
-                    if (potentialPartners.length > 0) {
-                        const partner = potentialPartners[Math.floor(Math.random() * potentialPartners.length)];
-                        resultText += ` con ${partner.name}`;
-                    } else {
-                        resultText += ' (pero no hay nadie del otro sexo disponible, ¡te salvaste!)';
-                    }
-                }
-                punishmentResultText.textContent = resultText;
+          if (winningIndex === -1) {
+            punishmentResultText.textContent =
+              `${gameState.lg.noPunishments ?? "No hay castigos. ¡Todos se salvan!"}`;
+          } else {
+            gameState.lastPunishmentIndex = winningIndex;
+            let punishment = gameState.punishments[winningIndex];
+            let resultText = punishment.text;
+            if (punishment.requiresOppositeGender) {
+              const currentPlayer =
+                gameState.players[gameState.currentPlayerIndex];
+              const oppositeGender =
+                currentPlayer.gender === "hombre" ? "mujer" : "hombre";
+              const potentialPartners = gameState.players.filter(
+                (p) =>
+                  p.gender === oppositeGender && p.name !== currentPlayer.name
+              );
+              if (potentialPartners.length > 0) {
+                const partner =
+                  potentialPartners[
+                    Math.floor(Math.random() * potentialPartners.length)
+                  ];
+                resultText += ` con ${partner.name}`;//------------------------------------------------------------------------
+              } else {
+                resultText +=
+                  " (pero no hay nadie del otro sexo disponible, ¡te salvaste!)";
+              }
             }
-            punishmentResultContainer.classList.remove('hidden');
-            confirmPunishmentBtn.classList.remove('hidden');
-            spinBtn.classList.add('hidden');
+            punishmentResultText.textContent = resultText;
+          }
+          punishmentResultContainer.classList.remove("hidden");
+          confirmPunishmentBtn.classList.remove("hidden");
+          spinBtn.classList.add("hidden");
         };
         const advanceToNextPlayer = () => {
-            gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
-            nextRound();
+          gameState.currentPlayerIndex =
+            (gameState.currentPlayerIndex + 1) % gameState.players.length;
+          nextRound();
         };
 
         // --- LÓGICA DE LA PÁGINA DE CONFIGURACIÓN ---
-        const settingsTabBtns = document.querySelectorAll('.settings-tab-btn');
-        const settingsContents = document.querySelectorAll('.settings-content');
-        const questionsList = document.getElementById('questions-list');
-        const questionFormTitle = document.getElementById('question-form-title');
-        const questionInput = document.getElementById('question-input');
-        const questionFormButtons = document.getElementById('question-form-buttons');
-        const punishmentsList = document.getElementById('punishments-list');
-        const punishmentFormTitle = document.getElementById('punishment-form-title');
-        const punishmentInput = document.getElementById('punishment-input');
-        const requiresOppositeGenderCheckbox = document.getElementById('requires-opposite-gender-checkbox');
-        const punishmentFormButtons = document.getElementById('punishment-form-buttons');
-        const resetDefaultsBtn = document.getElementById('reset-defaults-btn');
+        const settingsTabBtns = document.querySelectorAll(".settings-tab-btn");
+        const settingsContents = document.querySelectorAll(".settings-content");
+        const questionsList = document.getElementById("questions-list");
+        const questionFormTitle = document.getElementById(
+          "question-form-title"
+        );
+        const questionInput = document.getElementById("question-input");
+        const questionFormButtons = document.getElementById(
+          "question-form-buttons"
+        );
+        const punishmentsList = document.getElementById("punishments-list");
+        const punishmentFormTitle = document.getElementById(
+          "punishment-form-title"
+        );
+        const punishmentInput = document.getElementById("punishment-input");
+        const requiresOppositeGenderCheckbox = document.getElementById(
+          "requires-opposite-gender-checkbox"
+        );
+        const punishmentFormButtons = document.getElementById(
+          "punishment-form-buttons"
+        );
+        const resetDefaultsBtn = document.getElementById("reset-defaults-btn");
 
         const renderSettings = () => {
-            renderEditableList('questions', questionsList, gameState.questions);
-            renderEditableList('punishments', punishmentsList, gameState.punishments);
-            saveAllSettings();
+          renderEditableList("questions", questionsList, gameState.questions);
+          renderEditableList(
+            "punishments",
+            punishmentsList,
+            gameState.punishments
+          );
+          saveAllSettings();
         };
 
         const renderEditableList = (type, listElement, data) => {
-            listElement.innerHTML = '';
-            data.forEach((item, index) => {
-                const listItem = document.createElement('div');
-                listItem.className = 'editable-list-item p-3 rounded-lg flex items-center justify-between gap-4';
+          listElement.innerHTML = "";
+          data.forEach((item, index) => {
+            const listItem = document.createElement("div");
+            listItem.className =
+              "editable-list-item p-3 rounded-lg flex items-center justify-between gap-4";
 
-                let contentHTML = '';
-                if (type === 'punishments') {
-                    contentHTML = `
+            let contentHTML = "";
+            if (type === "punishments") {
+              contentHTML = `
                         <div class="flex-1 flex items-center gap-3">
                             <p>${item.text}</p>
-                            ${item.requiresOppositeGender ? '<i class="fas fa-venus-mars text-pink-400" title="Requiere otro sexo"></i>' : ''}
+                            ${
+                              item.requiresOppositeGender
+                                ? '<i class="fas fa-venus-mars text-pink-400" title="Requiere otro sexo"></i>'
+                                : ""
+                            }
                         </div>
                     `;
-                } else {
-                    contentHTML = `<p class="flex-1">${item}</p>`;
-                }
+            } else {
+              contentHTML = `<p class="flex-1">${item}</p>`;
+            }
 
-                listItem.innerHTML = `
+            listItem.innerHTML = `
                     ${contentHTML}
                     <div class="flex-shrink-0 flex gap-3">
                         <button class="edit-btn" data-type="${type}" data-index="${index}"><i class="fas fa-pencil-alt text-blue-400"></i></button>
                         <button class="delete-btn" data-type="${type}" data-index="${index}"><i class="fas fa-trash text-red-400"></i></button>
                     </div>
                 `;
-                listElement.appendChild(listItem);
-            });
+            listElement.appendChild(listItem);
+          });
         };
 
         const setupFormForEdit = (type, index) => {
-            gameState.editing = { type, index };
-            if (type === 'questions') {
-                const question = gameState.questions[index];
-                questionFormTitle.textContent = 'Editar Pregunta';
-                questionInput.value = question;
-                questionFormButtons.innerHTML = `<button id="update-question-btn" class="btn btn-primary flex-1">Actualizar</button><button id="cancel-edit-btn" class="btn btn-secondary flex-1">Cancelar</button>`;
-            } else {
-                const punishment = gameState.punishments[index];
-                punishmentFormTitle.textContent = 'Editar Castigo';
-                punishmentInput.value = punishment.text;
-                requiresOppositeGenderCheckbox.checked = punishment.requiresOppositeGender;
-                punishmentFormButtons.innerHTML = `<button id="update-punishment-btn" class="btn btn-primary flex-1">Actualizar</button><button id="cancel-edit-btn" class="btn btn-secondary flex-1">Cancelar</button>`;
-            }
+          gameState.editing = { type, index };
+          if (type === "questions") {
+            const question = gameState.questions[index];
+            questionFormTitle.textContent = gameState.lg.editQuestion ?? "Editar Pregunta";
+            questionInput.value = question;
+            questionFormButtons.innerHTML = `<button id="update-question-btn" class="btn btn-primary flex-1">${gameState.lg.update ?? "Actualizar"}</button><button id="cancel-edit-btn" class="btn btn-secondary flex-1">${gameState.lg.cancel ?? "Cancelar"}</button>`;
+          } else {
+            const punishment = gameState.punishments[index];
+            punishmentFormTitle.textContent = gameState.lg.editPunishment ?? "Editar Castigo";
+            punishmentInput.value = punishment.text;
+            requiresOppositeGenderCheckbox.checked =
+              punishment.requiresOppositeGender;
+            punishmentFormButtons.innerHTML = `<button id="update-punishment-btn" class="btn btn-primary flex-1">${gameState.lg.update ?? "Actualizar"}</button><button id="cancel-edit-btn" class="btn btn-secondary flex-1">${gameState.lg.cancel ?? "Cancelar"}</button>`;
+          }
         };
 
         const resetForms = () => {
-            gameState.editing = { type: null, index: null };
-            questionFormTitle.textContent = 'Añadir Pregunta';
-            questionInput.value = '';
-            questionFormButtons.innerHTML = `<button id="add-question-btn" class="btn btn-secondary flex-1">Añadir</button>`;
-            punishmentFormTitle.textContent = 'Añadir Castigo';
-            punishmentInput.value = '';
-            requiresOppositeGenderCheckbox.checked = false;
-            punishmentFormButtons.innerHTML = `<button id="add-punishment-btn" class="btn btn-secondary flex-1">Añadir</button>`;
+          gameState.editing = { type: null, index: null };
+          questionFormTitle.textContent = gameState.lg.addQuestion ?? "Añadir Pregunta";
+          questionInput.value = "";
+          questionFormButtons.innerHTML = `<button id="add-question-btn" class="btn btn-secondary flex-1" data-section="ui" data-value="add">
+                ${gameState.lg.add ?? "Añadir"}
+              </button>`;
+          punishmentFormTitle.textContent = gameState.lg.addPunishment ?? "Añadir Castigo";
+          punishmentInput.value = "";
+          requiresOppositeGenderCheckbox.checked = false;
+          punishmentFormButtons.innerHTML = `<button id="add-question-btn" class="btn btn-secondary flex-1" data-section="ui" data-value="add">
+                 ${gameState.lg.add ?? "Añadir"}
+              </button>`;
         };
 
         const saveAllSettings = () => {
-            localStorage.setItem('drinkUpQuestions', JSON.stringify(gameState.questions));
-            localStorage.setItem('drinkUpPunishments', JSON.stringify(gameState.punishments));
+          localStorage.setItem(
+            "drinkUpQuestions",
+            JSON.stringify(gameState.questions)
+          );
+          localStorage.setItem(
+            "drinkUpPunishments",
+            JSON.stringify(gameState.punishments)
+          );
         };
-        
+
         const loadAllSettings = () => {
-            const savedQuestions = localStorage.getItem('drinkUpQuestions');
-            const savedPunishments = localStorage.getItem('drinkUpPunishments');
-            gameState.questions = savedQuestions ? JSON.parse(savedQuestions) : [...gameState.defaultQuestions];
-            gameState.punishments = savedPunishments ? JSON.parse(savedPunishments) : [...gameState.defaultPunishments];
+          const savedQuestions = localStorage.getItem("drinkUpQuestions");
+          const savedPunishments = localStorage.getItem("drinkUpPunishments");
+          gameState.questions = savedQuestions
+            ? JSON.parse(savedQuestions)
+            : [...gameState.defaultQuestions];
+          gameState.punishments = savedPunishments
+            ? JSON.parse(savedPunishments)
+            : [...gameState.defaultPunishments];
         };
-        
+
         const showConfirmation = (text, onConfirm) => {
-            document.getElementById('confirmation-text').textContent = text;
-            confirmModal.classList.remove('hidden');
-            const yesBtn = document.getElementById('confirm-yes-btn');
-            const noBtn = document.getElementById('confirm-no-btn');
+          document.getElementById("confirmation-text").textContent = text;
+          confirmModal.classList.remove("hidden");
+          const yesBtn = document.getElementById("confirm-yes-btn");
+          const noBtn = document.getElementById("confirm-no-btn");
 
-            const confirmHandler = () => {
-                onConfirm();
-                hideConfirmation();
-            };
-            const cancelHandler = () => hideConfirmation();
+          const confirmHandler = () => {
+            onConfirm();
+            hideConfirmation();
+          };
+          const cancelHandler = () => hideConfirmation();
 
-            const hideConfirmation = () => {
-                confirmModal.classList.add('hidden');
-                yesBtn.removeEventListener('click', confirmHandler);
-                noBtn.removeEventListener('click', cancelHandler);
-            };
-            
-            yesBtn.addEventListener('click', confirmHandler, { once: true });
-            noBtn.addEventListener('click', cancelHandler, { once: true });
+          const hideConfirmation = () => {
+            confirmModal.classList.add("hidden");
+            yesBtn.removeEventListener("click", confirmHandler);
+            noBtn.removeEventListener("click", cancelHandler);
+          };
+
+          yesBtn.addEventListener("click", confirmHandler, { once: true });
+          noBtn.addEventListener("click", cancelHandler, { once: true });
         };
 
         // --- EVENT LISTENERS ---
-        settingsBtn.addEventListener('click', () => showPage('settings'));
-        backBtn.addEventListener('click', () => showPage('addPlayers'));
-        logo.addEventListener('click', () => {
-            if (pages.settings.classList.contains('active')) {
-                showPage('addPlayers');
-            }
+        settingsBtn.addEventListener("click", () => showPage("settings"));
+        backBtn.addEventListener("click", () => showPage("addPlayers"));
+        logo.addEventListener("click", () => {
+          if (pages.settings.classList.contains("active")) {
+            showPage("addPlayers");
+          }
         });
 
         // Listeners del juego
-        addPlayerBtn.addEventListener('click', () => {
-            const name = playerNameInput.value.trim();
-            if (!name) { playerNameInput.classList.add('shake'); setTimeout(() => playerNameInput.classList.remove('shake'), 500); return; }
-            const gender = document.querySelector('.gender-tab.active').dataset.gender;
-            gameState.players.push({ name, gender });
-            renderPlayerList();
-            updateStartButtonState();
-            playerNameInput.value = '';
-            playerNameInput.focus();
+        addPlayerBtn.addEventListener("click", () => {
+          const name = playerNameInput.value.trim();
+          if (!name) {
+            playerNameInput.classList.add("shake");
+            setTimeout(() => playerNameInput.classList.remove("shake"), 500);
+            return;
+          }
+          const gender =
+            document.querySelector(".gender-tab.active").dataset.gender;
+          gameState.players.push({ name, gender });
+          renderPlayerList();
+          updateStartButtonState();
+          playerNameInput.value = "";
+          playerNameInput.focus();
         });
-        genderTabs.forEach(tab => tab.addEventListener('click', () => { genderTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active'); }));
-        startGameBtn.addEventListener('click', () => {
-            if (gameState.players.length < 2) return;
-            gameState.currentPlayerIndex = 0;
-            gameState.lastPunishmentIndex = null;
-            nextRound();
+        genderTabs.forEach((tab) =>
+          tab.addEventListener("click", () => {
+            genderTabs.forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+          })
+        );
+        startGameBtn.addEventListener("click", () => {
+          if (gameState.players.length < 2) return;
+          gameState.currentPlayerIndex = 0;
+          gameState.lastPunishmentIndex = null;
+          nextRound();
         });
-        nextPlayerBtn.addEventListener('click', advanceToNextPlayer);
-        punishmentBtn.addEventListener('click', setupRoulette);
-        spinBtn.addEventListener('click', spinWheel);
-        confirmPunishmentBtn.addEventListener('click', advanceToNextPlayer);
+        nextPlayerBtn.addEventListener("click", advanceToNextPlayer);
+        punishmentBtn.addEventListener("click", setupRoulette);
+        spinBtn.addEventListener("click", spinWheel);
+        confirmPunishmentBtn.addEventListener("click", advanceToNextPlayer);
 
         // Listeners de configuración
-        settingsTabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                settingsTabBtns.forEach(b => b.classList.remove('active'));
-                settingsContents.forEach(c => c.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(`settings-content-${btn.dataset.target}`).classList.add('active');
-            });
-        });
-        
-        document.getElementById('settings-content-questions').addEventListener('click', e => {
-            if (e.target.matches('#add-question-btn')) {
-                const text = questionInput.value.trim();
-                if (text) { gameState.questions.push(text); resetForms(); renderSettings(); }
-            } else if (e.target.matches('#update-question-btn')) {
-                const text = questionInput.value.trim();
-                if (text) { gameState.questions[gameState.editing.index] = text; resetForms(); renderSettings(); }
-            }
-        });
-        
-        document.getElementById('settings-content-punishments').addEventListener('click', e => {
-            if (e.target.matches('#add-punishment-btn')) {
-                const text = punishmentInput.value.trim();
-                if (text) { gameState.punishments.push({ text, requiresOppositeGender: requiresOppositeGenderCheckbox.checked }); resetForms(); renderSettings(); }
-            } else if (e.target.matches('#update-punishment-btn')) {
-                const text = punishmentInput.value.trim();
-                if (text) { gameState.punishments[gameState.editing.index] = { text, requiresOppositeGender: requiresOppositeGenderCheckbox.checked }; resetForms(); renderSettings(); }
-            }
+        settingsTabBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            settingsTabBtns.forEach((b) => b.classList.remove("active"));
+            settingsContents.forEach((c) => c.classList.remove("active"));
+            btn.classList.add("active");
+            document
+              .getElementById(`settings-content-${btn.dataset.target}`)
+              .classList.add("active");
+          });
         });
 
-        document.getElementById('settings-page').addEventListener('click', e => {
-            if (e.target.matches('#cancel-edit-btn')) {
+        document
+          .getElementById("settings-content-questions")
+          .addEventListener("click", (e) => {
+            if (e.target.matches("#add-question-btn")) {
+              const text = questionInput.value.trim();
+              if (text) {
+                gameState.questions.push(text);
                 resetForms();
-            } else if (e.target.closest('.edit-btn')) {
-                const btn = e.target.closest('.edit-btn');
-                setupFormForEdit(btn.dataset.type, parseInt(btn.dataset.index));
-            } else if (e.target.closest('.delete-btn')) {
-                const btn = e.target.closest('.delete-btn');
-                const type = btn.dataset.type;
-                const index = parseInt(btn.dataset.index);
-                showConfirmation('¿Seguro que quieres eliminar este elemento?', () => {
-                    if (type === 'questions') gameState.questions.splice(index, 1);
-                    else gameState.punishments.splice(index, 1);
-                    renderSettings();
-                });
-            }
-        });
-
-        resetDefaultsBtn.addEventListener('click', () => {
-            showConfirmation('¿Restaurar todo a los valores predeterminados? Perderás tus cambios.', () => {
-                gameState.questions = [...gameState.defaultQuestions];
-                gameState.punishments = [...gameState.defaultPunishments];
                 renderSettings();
-            });
+              }
+            } else if (e.target.matches("#update-question-btn")) {
+              const text = questionInput.value.trim();
+              if (text) {
+                gameState.questions[gameState.editing.index] = text;
+                resetForms();
+                renderSettings();
+              }
+            }
+          });
+
+        document
+          .getElementById("settings-content-punishments")
+          .addEventListener("click", (e) => {
+            if (e.target.matches("#add-punishment-btn")) {
+              const text = punishmentInput.value.trim();
+              if (text) {
+                gameState.punishments.push({
+                  text,
+                  requiresOppositeGender:
+                    requiresOppositeGenderCheckbox.checked,
+                });
+                resetForms();
+                renderSettings();
+              }
+            } else if (e.target.matches("#update-punishment-btn")) {
+              const text = punishmentInput.value.trim();
+              if (text) {
+                gameState.punishments[gameState.editing.index] = {
+                  text,
+                  requiresOppositeGender:
+                    requiresOppositeGenderCheckbox.checked,
+                };
+                resetForms();
+                renderSettings();
+              }
+            }
+          });
+
+        document
+          .getElementById("settings-page")
+          .addEventListener("click", (e) => {
+            if (e.target.matches("#cancel-edit-btn")) {
+              resetForms();
+            } else if (e.target.closest(".edit-btn")) {
+              const btn = e.target.closest(".edit-btn");
+              setupFormForEdit(btn.dataset.type, parseInt(btn.dataset.index));
+            } else if (e.target.closest(".delete-btn")) {
+              const btn = e.target.closest(".delete-btn");
+              const type = btn.dataset.type;
+              const index = parseInt(btn.dataset.index);
+              showConfirmation(
+                gameState.lg.deleteElement ?? "¿Seguro que quieres eliminar este elemento?",
+                () => {
+                  if (type === "questions")
+                    gameState.questions.splice(index, 1);
+                  else gameState.punishments.splice(index, 1);
+                  renderSettings();
+                }
+              );
+            }
+          });
+
+        resetDefaultsBtn.addEventListener("click", () => {
+          showConfirmation(
+            gameState.lg.resetDefaults ?? "Resetear a Predeterminados",
+            () => {
+              gameState.questions = [...gameState.defaultQuestions];
+              gameState.punishments = [...gameState.defaultPunishments];
+              renderSettings();
+            }
+          );
         });
 
         // --- INICIALIZACIÓN ---
         const initialize = () => {
-            loadAllSettings();
-            renderPlayerList();
-            updateStartButtonState();
-            renderSettings();
-            showPage('addPlayers');
+          loadAllSettings();
+          renderPlayerList();
+          updateStartButtonState();
+          renderSettings();
         };
-
+        showPage("addPlayers");
         initialize();
-    });
+      });
     </script>
-</body>
+  </body>
 </html>

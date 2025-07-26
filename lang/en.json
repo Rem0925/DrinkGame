@@ -1,0 +1,45 @@
+{
+  "ui": {
+    "addPlayer": "ADD PLAYER",
+    "startGame": "START",
+    "settings": "Settings",
+    "questionsTab": "Questions",
+    "punishmentsTab": "Punishments",
+    "addQuestion": "Add Question",
+    "addPunishment": "Add Punishment",
+    "add": "Add",
+    "spin": "Spin",
+    "editQuestion": "Edit Question",
+    "editPunishment": "Edit Punishment",
+    "update": "Update",
+    "cancel": "Cancel",
+    "resetDefaults": "Reset to Default",
+    "deleteElement": "Are you sure you want to delete this item?",
+    "requiresOppositeGender": "Requires opposite gender",
+    "confirmation": "Are you sure?",
+    "yes": "Yes",
+    "no": "No",
+    "noQuestions": "No questions. Add some in settings!",
+    "noPunishments": "No punishments. Everyone is safe!",
+    "playerListPlaceholder": "Add 2 or more players",
+    "addPlayersPlaceholder": "Player name",
+    "male": "MALE",
+    "female": "FEMALE"
+  },
+  "questions": [
+    "Who is most likely to do something embarrassing when drunk?",
+    "Who is most likely to end up in another city after a crazy night?",
+    "Who is most likely to wake up with a new tattoo?",
+    "Who is most likely to lose their phone at a party?",
+    "Who could go the longest without drinking alcohol?",
+    "Who is most likely to drunk call their ex?"
+  ],
+  "punishments": [
+    { "text": "Drink 2 shots", "requiresOppositeGender": false },
+    { "text": "Take a shot", "requiresOppositeGender": false },
+    { "text": "Tell an embarrassing secret", "requiresOppositeGender": false },
+    { "text": "Imitate another player", "requiresOppositeGender": true },
+    { "text": "Do 10 push-ups", "requiresOppositeGender": false },
+    { "text": "Dance for 30 seconds", "requiresOppositeGender": false }
+  ]
+}
