@@ -15,7 +15,9 @@
     "cancel": "Cancel",
     "resetDefaults": "Reset to Default",
     "deleteElement": "Are you sure you want to delete this item?",
-    "requiresOppositeGender": "Requires opposite gender",
+    "requiresPeople": "Requires another player?",
+    "requiresOppositeGender": "Opposite Gender",
+    "requiresOther": "All",
     "confirmation": "Are you sure?",
     "yes": "Yes",
     "no": "No",
@@ -24,7 +26,11 @@
     "playerListPlaceholder": "Add 2 or more players",
     "addPlayersPlaceholder": "Player name",
     "male": "MALE",
-    "female": "FEMALE"
+    "female": "FEMALE",
+    "addQuestionPlaceholder": "Write the question...",
+    "addPunishmentPlaceholder": "Write the punishment...",
+    "with": "with",
+    "noOppositeGender": " (but there is no one of the opposite gender available, you're safe!)"
   },
   "questions": [
     "Who is most likely to do something embarrassing when drunk?",
@@ -35,11 +41,25 @@
     "Who is most likely to drunk call their ex?"
   ],
   "punishments": [
-    { "text": "Drink 2 shots", "requiresOppositeGender": false },
-    { "text": "Take a shot", "requiresOppositeGender": false },
-    { "text": "Tell an embarrassing secret", "requiresOppositeGender": false },
-    { "text": "Imitate another player", "requiresOppositeGender": true },
-    { "text": "Do 10 push-ups", "requiresOppositeGender": false },
-    { "text": "Dance for 30 seconds", "requiresOppositeGender": false }
+    { "text": "Drink 2 shots",
+     "requiresOppositeGender": false , 
+     "OtherPerson": false },
+     { "text":  "Take a shot", 
+     "requiresOppositeGender": false, 
+     "OtherPerson": false  },
+    { "text": "Tell an embarrassing secret",
+      "requiresOppositeGender": false,
+      "OtherPerson": false 
+    },
+    { "text":"Imitate another player", 
+    "requiresOppositeGender": true,
+    "OtherPerson": false  },
+    { "text": "Do 10 push-ups", 
+    "requiresOppositeGender": false ,
+    "OtherPerson": false },
+    {"text": "Dance for 30 seconds",
+      "requiresOppositeGender": false,
+      "OtherPerson": false 
+    }
   ]
 }

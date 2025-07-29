@@ -17,17 +17,19 @@ document.addEventListener("DOMContentLoaded", () => {
             "¿Quién es más probable que llame a su ex borracho?",
           ],
           defaultPunishments: [
-            { text: "Bebe 2 tragos", requiresOppositeGender: false },
-            { text: "Bebe un chupito", requiresOppositeGender: false },
+            { text: "Bebe 2 tragos", requiresOppositeGender: false , OtherPerson: false },
+            { text: "Bebe un chupito", requiresOppositeGender: false, OtherPerson: false  },
             {
               text: "Cuenta un secreto vergonzoso",
               requiresOppositeGender: false,
+              OtherPerson: false 
             },
-            { text: "Imita a otro jugador", requiresOppositeGender: true },
-            { text: "Haz 10 flexiones", requiresOppositeGender: false },
+            { text: "Imita a otro jugador", requiresOppositeGender: true,OtherPerson: false  },
+            { text: "Haz 10 flexiones", requiresOppositeGender: false ,OtherPerson: false },
             {
               text: "Baila durante 30 segundos",
               requiresOppositeGender: false,
+              OtherPerson: false 
             },
           ],
         };
@@ -35,17 +37,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const flags_element = document.getElementById("flags");
         const textsToChange = document.querySelectorAll("[data-section='ui']");
         
-        const chanceLanguage = async language =>{
+        const chanceLanguage = async (language,all) =>{
             
             const requestJSON = await fetch(`./lang/${language}.json`);
             const text = await requestJSON.json();
             gameState.lg = text["ui"];
-            console.log(gameState.lg);
             // Actualizar las preguntas y castigos predeterminados
-            gameState.defaultQuestions = text["questions"];
-            gameState.defaultPunishments = text["punishments"];
-            gameState.questions = [...gameState.defaultQuestions];
-            gameState.punishments = [...gameState.defaultPunishments];
+            if(all == true){
+              gameState.defaultQuestions = text["questions"];
+              gameState.defaultPunishments = text["punishments"];
+              gameState.questions = [...gameState.defaultQuestions];
+              gameState.punishments = [...gameState.defaultPunishments];
+            }
+            playerNameInput.placeholder = text["ui"]["addPlayersPlaceholder"] ?? "Nombre del jugador";
+            questionInput.placeholder = text["ui"]["addQuestionPlaceholder"] ?? "Escribe la pregunta...";
+            punishmentInput.placeholder = text["ui"]["addPunishmentPlaceholder"] ?? "Escribe el castigo...";
             renderSettings();
             for(const textToChange of textsToChange){
                 const section = textToChange.dataset.section;
@@ -55,7 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
             initialize();
         };
         flags_element.addEventListener("click", (e)=>{
-            chanceLanguage(e.target.parentElement.dataset.language);
+            chanceLanguage(e.target.parentElement.dataset.language,true);
+            localStorage.setItem("drinkUpLanguage", e.target.parentElement.dataset.language);
         });
         // --- ELEMENTOS DEL DOM ---
         const pages = {
@@ -238,12 +245,29 @@ document.addEventListener("DOMContentLoaded", () => {
                   potentialPartners[
                     Math.floor(Math.random() * potentialPartners.length)
                   ];
-                resultText += ` con ${partner.name}`;//------------------------------------------------------------------------
+                resultText += ` ${gameState.lg.with ?? "con"} ${partner.name}`;
               } else {
-                resultText +=
-                  " (pero no hay nadie del otro sexo disponible, ¡te salvaste!)";
+                resultText +=`${gameState.lg.noOppositeGender ??
+                   " (pero no hay nadie del otro sexo disponible, ¡te salvaste!)"}`;
               }
+            }else if(punishment.OtherPerson){
+              const currentPlayer =
+                gameState.players[gameState.currentPlayerIndex];
+              const potentialPartners = gameState.players.filter(
+                (p) => p.name !== currentPlayer.name
+              );
+              if (potentialPartners.length > 0) {
+                const partner =
+                  potentialPartners[
+                    Math.floor(Math.random() * potentialPartners.length)
+                  ];
+                resultText += ` ${gameState.lg.with ?? "con"} ${partner.name}`;
+              } else {
+                resultText +=`${gameState.lg.noOppositeGender ??
+                   " (pero no hay nadie disponible, ¡te salvaste!)"}`;
+
             }
+          }
             punishmentResultText.textContent = resultText;
           }
           punishmentResultContainer.classList.remove("hidden");
@@ -275,6 +299,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const requiresOppositeGenderCheckbox = document.getElementById(
           "requires-opposite-gender-checkbox"
         );
+        const requiresOppositeCheckbox = document.getElementById(
+          "requires-opposite-checkbox");
         const punishmentFormButtons = document.getElementById(
           "punishment-form-buttons"
         );
@@ -305,7 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             ${
                               item.requiresOppositeGender
                                 ? '<i class="fas fa-venus-mars text-pink-400" title="Requiere otro sexo"></i>'
-                                : ""
+                                : item.OtherPerson ? `<i class="fa-solid fa-people-group text-blue-400"></i>` : ""
                             }
                         </div>
                     `;
@@ -336,7 +362,8 @@ document.addEventListener("DOMContentLoaded", () => {
             punishmentFormTitle.textContent = gameState.lg.editPunishment ?? "Editar Castigo";
             punishmentInput.value = punishment.text;
             requiresOppositeGenderCheckbox.checked =
-              punishment.requiresOppositeGender;
+            punishment.requiresOppositeGender;
+            requiresOppositeCheckbox.checked = punishment.OtherPerson;
             punishmentFormButtons.innerHTML = `<button id="update-punishment-btn" class="btn btn-primary flex-1">${gameState.lg.update ?? "Actualizar"}</button><button id="cancel-edit-btn" class="btn btn-secondary flex-1">${gameState.lg.cancel ?? "Cancelar"}</button>`;
           }
         };
@@ -351,6 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
           punishmentFormTitle.textContent = gameState.lg.addPunishment ?? "Añadir Castigo";
           punishmentInput.value = "";
           requiresOppositeGenderCheckbox.checked = false;
+          requiresOppositeCheckbox.checked = false;
           punishmentFormButtons.innerHTML = `<button id="add-question-btn" class="btn btn-secondary flex-1" data-section="ui" data-value="add">
                  ${gameState.lg.add ?? "Añadir"}
               </button>`;
@@ -484,6 +512,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   text,
                   requiresOppositeGender:
                     requiresOppositeGenderCheckbox.checked,
+                  OtherPerson: requiresOppositeCheckbox.checked,
                 });
                 resetForms();
                 renderSettings();
@@ -495,6 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   text,
                   requiresOppositeGender:
                     requiresOppositeGenderCheckbox.checked,
+                  OtherPerson: requiresOppositeCheckbox.checked,
                 };
                 resetForms();
                 renderSettings();
@@ -536,7 +566,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           );
         });
-
+        
         // --- INICIALIZACIÓN ---
         const initialize = () => {
           loadAllSettings();
@@ -544,6 +574,7 @@ document.addEventListener("DOMContentLoaded", () => {
           updateStartButtonState();
           renderSettings();
         };
+        chanceLanguage(localStorage.getItem("drinkUpLanguage") || "en",false);
         showPage("addPlayers");
         initialize();
       });

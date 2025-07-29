@@ -15,7 +15,9 @@
     "cancel": "Cancelar",
     "resetDefaults": "Resetear a Predeterminados",
     "deleteElement": "¿Seguro que quieres eliminar este elemento?",
-    "requiresOppositeGender": "Requiere otro sexo",
+    "requiresPeople": "Requiere otro jugador?",
+    "requiresOppositeGender": "Sexo Contrario",
+    "requiresOther": "Todos",
     "confirmation": "¿Estás seguro?",
     "yes": "Sí",
     "no": "No",
@@ -24,7 +26,11 @@
     "playerListPlaceholder": "Añade de 2 a más jugadores",
     "addPlayersPlaceholder": "Nombre del jugador",
     "male": "HOMBRE",
-    "female": "MUJER"
+    "female": "MUJER",
+    "addQuestionPlaceholder": "Escribe la pregunta...",
+    "addPunishmentPlaceholder": "Escribe el castigo...",
+    "with": "con",
+    "noOppositeGender": " (pero no hay nadie del otro sexo disponible, ¡te salvaste!)"
   },
   "questions": [
     "¿Quién es más probable que haga algo vergonzoso cuando está borracho?",
@@ -35,11 +41,25 @@
     "¿Quién es más probable que llame a su ex borracho?"
   ],
   "punishments": [
-    { "text": "Bebe 2 tragos", "requiresOppositeGender": false },
-    { "text": "Bebe un chupito", "requiresOppositeGender": false },
-    { "text": "Cuenta un secreto vergonzoso", "requiresOppositeGender": false },
-    { "text": "Imita a otro jugador", "requiresOppositeGender": true },
-    { "text": "Haz 10 flexiones", "requiresOppositeGender": false },
-    { "text": "Baila durante 30 segundos", "requiresOppositeGender": false }
+    { "text": "Bebe 2 tragos",
+     "requiresOppositeGender": false , 
+     "OtherPerson": false },
+     { "text": "Bebe un chupito", 
+     "requiresOppositeGender": false, 
+     "OtherPerson": false  },
+    { "text": "Cuenta un secreto vergonzoso",
+      "requiresOppositeGender": false,
+      "OtherPerson": false 
+    },
+    { "text": "Imita a otro jugador", 
+    "requiresOppositeGender": true,
+    "OtherPerson": false  },
+    { "text": "Haz 10 flexiones", 
+    "requiresOppositeGender": false ,
+    "OtherPerson": false },
+    {"text": "Baila durante 30 segundos",
+      "requiresOppositeGender": false,
+      "OtherPerson": false 
+    }
   ]
 }
