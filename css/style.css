@@ -1,4 +1,4 @@
-body {
+ body {
         font-family: "Montserrat", sans-serif;
         background-color: #132f59;
         color: white;
@@ -9,6 +9,7 @@ body {
         max-width: 500px;
         margin: 0 auto;
         padding: 1.25rem;
+        padding-bottom: 80px; /* Espacio para el banner de regla */
       }
       #logo {
         max-width: 150px;
@@ -25,6 +26,7 @@ body {
         transition: all 0.3s ease;
         margin-bottom: 15px;
         border: none;
+        text-transform: uppercase;
       }
       .btn-primary {
         background-color: #0b7dda;
@@ -101,39 +103,37 @@ body {
         justify-content: center;
       }
       .action-buttons button {
-        background: none;
-        border: none;
-        font-size: 60px;
-        cursor: pointer;
-        transition: all 0.3s;
-        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
-      }
-      .action-buttons .red {
-        color: #ff6b6b;
-      }
-      .action-buttons .green {
-        color: #0bda61;
-      }
-      .action-buttons button:hover {
-        transform: scale(1.1);
+        margin-top: 10px;
       }
       .page {
         display: none;
       }
       .page.active {
         display: block;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
       .current-player-header {
         text-align: center;
         font-weight: 800;
-        font-size: 2rem;
+        font-size: 1.8rem;
         margin-bottom: 20px;
         color: white;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
       .header-icon {
         position: absolute;
-        top: 20px;
+        top: 50%;
+        transform: translateY(-50%);
         background-color: rgba(255, 255, 255, 0.2);
         border-radius: 50%;
         width: 40px;
@@ -190,18 +190,38 @@ body {
         width: 120px;
         height: 100px;
         margin: 0 8px;
-        background: #fff;
-        color: #132f59;
+        color: white;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 5px;
+        padding: 10px;
         font-weight: bold;
-        font-size: 0.9rem;
+        font-size: 1rem;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        border: 3px solid transparent;
+        border: 3px solid rgba(255, 255, 255, 0.5);
+        transition: transform 0.2s ease;
+      }
+      .wheel-card.card-punishment {
+        background-color: #ff6b6b;
+        border-color: #ff8a8a;
+      }
+      .wheel-card.card-punishment-special {
+        background-color: #c53030;
+        border-color: #e53e3e;
+      }
+      .wheel-card.card-minigame {
+        background-color: #f9a826;
+        border-color: #fbc02d;
+      }
+      .wheel-card.card-rule {
+        background-color: #0b7dda;
+        border-color: #42a5f5;
+      }
+      .wheel-card.card-luck {
+        background-color: #0bda61;
+        border-color: #4caf50;
       }
       .wheel-arrow {
         position: absolute;
@@ -224,13 +244,13 @@ body {
         border-right: 12px solid transparent;
         border-top: 12px solid #132f59;
       }
-
-      /* Estilos para la página de configuración */
       .settings-tab {
         border-bottom: 4px solid transparent;
+        transition: border-color 0.3s;
       }
       .settings-tab.active {
         border-bottom-color: #0b7dda;
+        color: #0b7dda;
       }
       .settings-content {
         display: none;
@@ -241,8 +261,6 @@ body {
       .editable-list-item {
         background-color: rgba(255, 255, 255, 0.1);
       }
-
-      /* Estilos para el selector de idioma */
       .flags {
         position: absolute;
         top: 20px;
@@ -253,7 +271,74 @@ body {
         align-items: center;
         justify-content: space-between;
       }
-      #flag-item {
+      .flag-item {
         cursor: pointer;
         width: 30px;
+        transition: transform 0.2s ease, opacity 0.2s;
+        opacity: 0.7;
+      }
+      .flag-item:hover,
+      .flag-item.active {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+      .flag-item img {
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+      #active-rule-banner {
+        transform: translateY(100%);
+        transition: transform 0.5s ease-in-out;
+      }
+      #active-rule-banner.visible {
+        transform: translateY(0);
+      }
+      /* Estilos para el modal de entrada de texto personalizado */
+      #text-input-modal {
+        background-color: rgba(0, 0, 0, 0.75);
+      }
+      #text-input-modal .bg-gray-800 {
+        background-color: #2d3748; /* Un gris oscuro */
+      }
+      #text-input-modal input[type="text"] {
+        background-color: #4a5568; /* Un gris más claro para el input */
+        border: 1px solid #2d3748;
+        color: white;
+      }
+      #text-input-modal input[type="text"]:focus {
+        border-color: #0b7dda;
+        outline: none;
+      }
+      /* Estilos para el modal de selección de jugador con scroll */
+      #player-selection-list {
+        max-height: 50vh; /* Altura máxima para la lista de jugadores */
+        overflow-y: auto; /* Habilita el scroll vertical si el contenido excede la altura */
+        padding-right: 10px; /* Espacio para la barra de scroll */
+      }
+      #active-rules-container {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 20px;
+      }
+      #active-rules-list {
+        list-style: none;
+        padding: 0;
+      }
+      #active-rules-list li {
+        margin-bottom: 8px;
+        padding: 8px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      #active-rules-list li .remove-rule-btn {
+        background: none;
+        border: none;
+        color: #e53e3e;
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin-left: 10px;
       }
