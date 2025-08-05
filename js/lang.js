@@ -1,4 +1,4 @@
- export const spanishData = {
+   export const spanishData = {
         ui: {
           addPlayer: "Añadir Jugador",
           startGame: "Comenzar",
@@ -7,7 +7,7 @@
           rouletteTab: "Ruleta",
           punishmentsTab: "Castigos",
           minigamesTab: "Minijuegos",
-          questionsOther : "Preguntas para Jugador",
+          questionsOther : "Preguntas Incomodas",
           addQuestion: "Añadir Pregunta",
           addPunishment: "Añadir Castigo",
           addMinigame: "Añadir Minijuego",
@@ -53,6 +53,7 @@
           cardMinigame: "Minijuego",
           cardRule: "Regla",
           cardLuck: "Suerte",
+          cardNoLuck: "Mala Suerte",
           cardQuestion: "Pregunta", 
           createRule: "Crea una nueva regla:",
           activeRulesTitle: "Reglas Activas",
@@ -60,12 +61,13 @@
           reSpinHeader: "¡Gira de nuevo!", // Nuevo texto para la carta de suerte
           ruleCardDescription: "¡REGLA! Tienes el poder. Crea una nueva regla que todos deban seguir.",
           luckCardDescription: "¡SUERTE! Te has salvado. Elige a otra persona para que gire la ruleta en tu lugar.",
+          NoluckCardDescription: "!Mala Suerte! Bebe un trago y vuelve a girar la ruleta",
           answerQuestionsPrompt: "tienes que responder", // Nuevo
           choosePlayerForQuestionPrompt: "elige a un jugador para responder", // Nuevo
           random: "Aleatorio", // Nuevo
-          nonRandom: "El jugador elige", // Nuevo
+          nonRandom: "El jugador responde", // Nuevo
           chosetoRespond: "tienes que responder:",
-          playerchoose: "elige a un jugador para responder:"
+          NoRespondC: "(Sino no respondes, bebes 2 tragos)"
         },
         questions: [
           "¿Quién es más probable que se ría en un momento serio?",
@@ -107,7 +109,7 @@
           rouletteTab: "Roulette",
           punishmentsTab: "Punishments",
           minigamesTab: "Minigames",
-          questionsOther : "Questions for Player",
+          questionsOther : "Awkward Questions",
           addQuestion: "Add Question",
           addPunishment: "Add Punishment",
           addMinigame: "Add Minigame",
@@ -152,6 +154,7 @@
           cardMinigame: "Minigame",
           cardRule: "Rule",
           cardLuck: "Luck",
+          cardNoLuck: "Bad Luck",
           cardQuestion: "Question", 
           createRule: "Create a new rule:",
           activeRulesTitle: "Active Rules",
@@ -159,12 +162,13 @@
           reSpinHeader: "Spin again!", // New text for the luck card
           ruleCardDescription: "RULE! You have the power. Create a new rule that everyone must follow.",
           luckCardDescription: "LUCK! You're safe. Choose another person to spin the roulette wheel in your place.",
+          NoluckCardDescription: "Bad Luck! Take a sip and spin the wheel again.",
           answerQuestionsPrompt: "you have to answer", // New
           choosePlayerForQuestionPrompt: "choose a player to answer", // New
           random: "Random", // New
-          nonRandom: "Player chooses", // New
+          nonRandom: "Player Responds", // New
           chosetoRespond: "You have to answer:",
-          playerchoose: "choose a player to answer:"
+          NoRespondC: "(If you don't answer, you drink 2 sips)"
         },
         questions: [
           "Who is most likely to laugh at a serious moment?",

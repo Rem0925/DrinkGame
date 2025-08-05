@@ -1,7 +1,7 @@
       // Data para la interfaz de usuario en español
-      import { spanishData, englishData } from "./lang.js";
+import { spanishData, englishData } from './lang.js';
 
-      document.addEventListener("DOMContentLoaded", () => {
+ document.addEventListener("DOMContentLoaded", () => {
         // Estado global del juego
         const gameState = {
           players: [],
@@ -195,6 +195,10 @@
               type: "luck",
               text: gameState.lg.luckCardDescription,
             },
+            {
+              type: "Noluck",
+              text: gameState.lg.NoluckCardDescription,
+            }
           ];
           gameState.rouletteItems = [
             ...gameState.punishments.map((p) => ({ ...p, type: "punishment" })),
@@ -423,6 +427,12 @@
                 animation = "card-animate-pulse";
                 cardText = gameState.lg.cardLuck; 
                 break;
+              case "Noluck":
+                cardClasses.push("card-Noluck");
+                icon = " fa-ban";
+                animation = "card-animate-pulse";
+                cardText = gameState.lg.cardNoLuck;
+                break;
               case "questionForPlayer":
                 cardClasses.push("card-question");
                 cardText = gameState.lg.cardQuestion; 
@@ -558,7 +568,7 @@
                 resultText.textContent = `${gameState.lg.activeRule}: ${newRule.trim()}`; // Actualiza el texto después de cerrar el modal
               } else {
                 resultText.textContent =
-                  "No se creó ninguna regla. ¡Te salvaste!";
+                  "No se creó ninguna regla. ¡Te salvaste!";//-------------------------------------------------------------------------------------------------------------------------------------------------
               }
               // Mostrar los botones de resultado y ocultar el de girar DESPUÉS de que el modal se cierre
               resultContainer.classList.remove("hidden");
@@ -566,7 +576,7 @@
               spinBtn.classList.add("hidden");
             });
             // No se hace nada más aquí, ya que el resto de la lógica se ejecuta en el callback del modal
-          } else if (item.type === "luck") {
+          } else if (item.type === "luck" || item.type === "Noluck") {
             // Lógica para la carta de suerte: permite volver a girar
             resultText.textContent = resultString;
             resultContainer.classList.remove("hidden"); // Muestra el texto de suerte
@@ -592,7 +602,7 @@
                   spinBtn.classList.add("hidden");
               } else if (playersAvailable.length > 0) {
                   // Si no es random, permite que el jugador elija a alguien
-                  resultText.innerHTML = `${currentPlayer.name}, ${gameState.lg.playerchoose} <br> "${questionText}"`;
+                  resultText.innerHTML = `${questionText} <br> ${gameState.lg.NoRespondC}`;
                   resultContainer.classList.remove("hidden");
                   confirmResultBtn.classList.remove("hidden");
                   spinBtn.classList.add("hidden");
