@@ -196,32 +196,97 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 10px;
+        padding: 5px;
         font-weight: bold;
         font-size: 1rem;
+        overflow: hidden;
+        word-wrap: break-word;
+        box-sizing: border-box;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         border: 3px solid rgba(255, 255, 255, 0.5);
         transition: transform 0.2s ease;
       }
+      .card-icon {
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+      .card-text {
+        font-size: 0.85rem;
+       display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: 3.3em; /* Altura para 3 líneas */
+      line-height: 1.1;; /* Ajusta según el line-height */
+      }
+      /* Iconos específicos */
+      .card-punishment .card-icon { color: rgba(255, 255, 255, 0.9); }
+      .card-minigame .card-icon { color: rgba(0, 0, 0, 0.7); }
+      .card-rule .card-icon { color: white; }
+      .card-luck .card-icon { color: white; }
+      .card-question .card-icon { color: white; }
+
+      /* Efectos especiales para cartas con condiciones */
+      .card-special {
+        position: relative;
+      }
+      /* Animaciones */
+
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+
+      @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(5deg); }
+        75% { transform: rotate(-5deg); }
+        100% { transform: rotate(0deg); }
+      }
+
+      .card-animate-pulse {
+        animation: pulse 2s infinite ease-in-out;
+      }
+
+      .card-animate-rotate {
+        animation: rotate 3s infinite ease-in-out;
+      }
+
+      /* Colores específicos para cada tipo de carta */
       .wheel-card.card-punishment {
         background-color: #ff6b6b;
         border-color: #ff8a8a;
       }
-      .wheel-card.card-punishment-special {
+
+      .wheel-card.card-punishment.card-special {
         background-color: #c53030;
         border-color: #e53e3e;
       }
+
       .wheel-card.card-minigame {
         background-color: #f9a826;
         border-color: #fbc02d;
       }
+
       .wheel-card.card-rule {
         background-color: #0b7dda;
         border-color: #42a5f5;
       }
+
       .wheel-card.card-luck {
         background-color: #0bda61;
         border-color: #4caf50;
+      }
+
+      .wheel-card.card-question {
+        background-color: #9c27b0;
+        border-color: #7b1fa2;
+      }
+
+      .wheel-card.card-question.card-random {
+        background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
       }
       .wheel-arrow {
         position: absolute;

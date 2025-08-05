@@ -309,6 +309,62 @@
               </button>
             </div>
           </div>
+          <!-- Seccion para editar preguntas -->
+           <div class="bg-gray-800 p-4 rounded-lg mb-4">
+            <h3
+              class="text-xl font-bold mb-2"
+              data-section="ui"
+              data-value="questionsOther"
+            >
+              Preguntas para Jugador
+            </h3>
+            <div
+              id="questionsOther-list"
+              class="space-y-2 mb-4 max-h-48 overflow-y-auto p-1"
+            ></div>
+            <h4
+              id="questionsOther-form-title"
+              class="text-lg font-semibold mb-2"
+              data-section="ui"
+              data-value="addQuestion"
+            >
+              Añadir/Editar Pregunta
+            </h4>
+            <textarea
+              id="questionsOther-input"
+              placeholder="Escribe la pregunta..."
+              class="w-full p-2 rounded bg-gray-700 border-gray-600 border-2"
+            ></textarea>
+            <div class="flex flex-col gap-2">
+              <label class="flex items-center text-sm"
+                ><input
+                  type="radio"
+                  name="requiresQuestion"
+                  value="true"
+                  class="mr-2 h-4 w-4"
+                /><span data-section="ui" data-value="random">Aleatorio</span></label
+              >
+              <label class="flex items-center text-sm"
+              ><input
+                type="radio"
+                name="requiresQuestion"
+                value="false"
+                class="mr-2 h-4 w-4"
+                checked
+              /><span data-section="ui" data-value="nonRandom">El jugador elige</span></label
+            >
+            </div>
+            <div id="questionsOther-form-buttons" class="flex gap-2 mt-2">
+              <button
+                id="add-question1-btn"
+                class="btn btn-secondary flex-1"
+                data-section="ui"
+                data-value="add"
+              >
+                Añadir
+              </button>
+            </div>
+          </div>
           <!-- Sección para editar minijuegos -->
           <div class="bg-gray-800 p-4 rounded-lg">
             <h3

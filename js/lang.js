@@ -7,6 +7,7 @@
           rouletteTab: "Ruleta",
           punishmentsTab: "Castigos",
           minigamesTab: "Minijuegos",
+          questionsOther : "Preguntas para Jugador",
           addQuestion: "Añadir Pregunta",
           addPunishment: "Añadir Castigo",
           addMinigame: "Añadir Minijuego",
@@ -52,17 +53,32 @@
           cardMinigame: "Minijuego",
           cardRule: "Regla",
           cardLuck: "Suerte",
+          cardQuestion: "Pregunta", 
           createRule: "Crea una nueva regla:",
           activeRulesTitle: "Reglas Activas",
           clearRules: "Borrar Reglas Activas",
           reSpinHeader: "¡Gira de nuevo!", // Nuevo texto para la carta de suerte
           ruleCardDescription: "¡REGLA! Tienes el poder. Crea una nueva regla que todos deban seguir.",
           luckCardDescription: "¡SUERTE! Te has salvado. Elige a otra persona para que gire la ruleta en tu lugar.",
+          answerQuestionsPrompt: "tienes que responder", // Nuevo
+          choosePlayerForQuestionPrompt: "elige a un jugador para responder", // Nuevo
+          random: "Aleatorio", // Nuevo
+          nonRandom: "El jugador elige", // Nuevo
+          chosetoRespond: "tienes que responder:",
+          playerchoose: "elige a un jugador para responder:"
         },
         questions: [
           "¿Quién es más probable que se ría en un momento serio?",
           "¿Quién se gastaría todo su sueldo en un día?",
           "¿Quién sobreviviría a un apocalipsis zombie?",
+        ],
+        answerQuestions: [ // NUEVA SECCIÓN: Preguntas para un jugador específico
+         {text: "¿Cuál es la cosa más extraña que has comido?",},
+          {text: "¿Si pudieras tener un superpoder, cuál sería?",},
+          {text: "¿Cuál ha sido tu momento más vergonzoso?",random: true},
+          {text: "¿A quién de los aquí presentes admiras más y por qué?",},
+          {text: "¿Qué es lo que más te asusta?",random: true},
+          {text: "¿Qué cambiarías de tu vida si pudieras volver al pasado?",},
         ],
         punishments: [
           { text: "Bebe 2 tragos" },
@@ -91,6 +107,7 @@
           rouletteTab: "Roulette",
           punishmentsTab: "Punishments",
           minigamesTab: "Minigames",
+          questionsOther : "Questions for Player",
           addQuestion: "Add Question",
           addPunishment: "Add Punishment",
           addMinigame: "Add Minigame",
@@ -135,18 +152,32 @@
           cardMinigame: "Minigame",
           cardRule: "Rule",
           cardLuck: "Luck",
+          cardQuestion: "Question", 
           createRule: "Create a new rule:",
           activeRulesTitle: "Active Rules",
           clearRules: "Clear Active Rules",
           reSpinHeader: "Spin again!", // New text for the luck card
           ruleCardDescription: "RULE! You have the power. Create a new rule that everyone must follow.",
           luckCardDescription: "LUCK! You're safe. Choose another person to spin the roulette wheel in your place.",
-          
+          answerQuestionsPrompt: "you have to answer", // New
+          choosePlayerForQuestionPrompt: "choose a player to answer", // New
+          random: "Random", // New
+          nonRandom: "Player chooses", // New
+          chosetoRespond: "You have to answer:",
+          playerchoose: "choose a player to answer:"
         },
         questions: [
           "Who is most likely to laugh at a serious moment?",
           "Who would spend their entire salary in one day?",
           "Who would survive a zombie apocalypse?",
+        ],
+        answerQuestions: [
+          { text: "What is the weirdest thing you've ever eaten?" },
+          { text: "If you could have one superpower, what would it be?" },
+          { text: "What has been your most embarrassing moment?", random: true },
+          { text: "Who among those present do you admire most and why?" },
+          { text: "What are you most afraid of?", random: true },
+          { text: "What would you change about your life if you could go back in time?" },
         ],
         punishments: [
           { text: "Drink 2 sips" },

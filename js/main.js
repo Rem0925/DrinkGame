@@ -10,6 +10,7 @@
           questions: [],
           punishments: [],
           minigames: [],
+          answerQuestions: [],
           rouletteItems: [], // Todos los items de ruleta disponibles (master list)
           questionDeck: [],
           defaultQuestions: [],
@@ -58,6 +59,10 @@
           questionFormButtons = document.getElementById(
             "question-form-buttons"
           ),
+          questionsOtherList = document.getElementById("questionsOther-list"),
+          questionsOtherFormTitle = document.getElementById("questionsOther-form-title"),
+          questionsOtherInput = document.getElementById("questionsOther-input"),
+          questionsOtherFormButtons = document.getElementById("questionsOther-form-buttons"),
           punishmentsList = document.getElementById("punishments-list"),
           punishmentFormTitle = document.getElementById(
             "punishment-form-title"
@@ -110,6 +115,7 @@
           localStorage.setItem("drinkUpLanguage", language);
           const data = language === "en" ? englishData : spanishData;
           gameState.defaultQuestions = data.questions;
+          gameState.defaultAnswerQuestions = data.answerQuestions;
           gameState.defaultPunishments = data.punishments;
           gameState.defaultMinigames = data.minigames;
           gameState.lg = data.ui;
@@ -124,6 +130,7 @@
           // Actualiza los placeholders de los inputs
           playerNameInput.placeholder = gameState.lg.addPlayersPlaceholder;
           questionInput.placeholder = gameState.lg.addQuestionPlaceholder;
+          questionsOtherInput.placeholder = gameState.lg.addQuestionPlaceholder;
           punishmentInput.placeholder = gameState.lg.addPunishmentPlaceholder;
           minigameInput.placeholder = gameState.lg.addMinigamePlaceholder;
 
@@ -151,6 +158,7 @@
         const saveAllData = () => {
           const lang = gameState.currentLanguage;
           saveToStorage(`drinkUpQuestions_${lang}`, gameState.questions);
+          saveToStorage(`drinkUpAnswerQuestions_${lang}`, gameState.answerQuestions);
           saveToStorage(`drinkUpPunishments_${lang}`, gameState.punishments);
           saveToStorage(`drinkUpMinigames_${lang}`, gameState.minigames);
           saveToStorage(`drinkUpActiveRules_${lang}`, gameState.activeRules);
@@ -161,6 +169,9 @@
           const lang = gameState.currentLanguage;
           gameState.questions = getFromStorage(`drinkUpQuestions_${lang}`) || [
             ...gameState.defaultQuestions,
+          ];
+          gameState.answerQuestions = getFromStorage(`drinkUpAnswerQuestions_${lang}`) || [ // Añade esta línea
+          ...gameState.defaultAnswerQuestions,
           ];
           gameState.punishments = getFromStorage(
             `drinkUpPunishments_${lang}`
@@ -187,6 +198,7 @@
           ];
           gameState.rouletteItems = [
             ...gameState.punishments.map((p) => ({ ...p, type: "punishment" })),
+            ...gameState.answerQuestions.map((q) => ({...q, type: "questionForPlayer"})),
             ...gameState.minigames.map((m) => ({ ...m, type: "minigame" })),
             ...fixedItems,
           ];
@@ -300,6 +312,9 @@
             gameState.rouletteItemsAvailable.push(gameState.lastSpunItem);
             gameState.lastSpunItem = null; // Limpiar el último item girado
           }
+          resultContainer.classList.add("hidden");
+          confirmResultBtn.classList.add("hidden");
+          spinBtn.classList.remove("hidden");
           populateWheel(); // Volver a poblar la ruleta con los items actualizados
           showPage("gameQuestion");
         };
@@ -369,31 +384,70 @@
           const wheelItems = Array(5).fill(gameState.currentRouletteOrder).flat();
           wheelItems.forEach((item) => {
             const card = document.createElement("div");
-            card.className = "wheel-card";
+            card.classList.add("wheel-card"); // Clase base
+            
             let cardText = item.text;
-            let cardClass = "";
+            let cardClasses = []; // Usaremos un array para las clases
+            let icon = ""; // Icono para la carta
+            let animation = ""; // Clase de animación
+
             switch (item.type) {
               case "punishment":
-                cardClass =
-                  item.requiresOppositeGender || item.requiresAnyPlayer
-                    ? "card-punishment-special"
-                    : "card-punishment";
+                cardClasses.push("card-punishment");
+                if (item.requiresOppositeGender) {
+                  cardClasses.push("card-special");
+                  icon = "fa-venus-mars"; // Icono para género opuesto
+                  animation = "card-animate-pulse";
+                } else if (item.requiresAnyPlayer) {
+                  cardClasses.push("card-special");
+                  icon = "fa-people-group"; // Icono para cualquier jugador
+                  animation = "card-animate-pulse";
+                } else {
+                  icon = "fa-exclamation-circle"; // Icono genérico para castigo
+                }
                 break;
               case "minigame":
-                cardClass = "card-minigame";
-                cardText = gameState.lg.cardMinigame; // Muestra un texto genérico para minijuegos
+                cardClasses.push("card-minigame");
+                icon = "fa-gamepad"; // Icono para minijuegos
+                cardText = gameState.lg.cardMinigame; 
                 break;
               case "rule":
-                cardClass = "card-rule";
-                cardText = gameState.lg.cardRule; // Muestra un texto genérico para reglas
+                cardClasses.push("card-rule");
+                icon = "fa-gavel"; // Icono para reglas
+                animation = "card-animate-rotate";
+                cardText = gameState.lg.cardRule; 
                 break;
               case "luck":
-                cardClass = "card-luck";
-                cardText = gameState.lg.cardLuck; // Muestra un texto genérico para suerte
+                cardClasses.push("card-luck");
+                icon = "fa-clover"; // Icono para suerte (trébol)
+                animation = "card-animate-pulse";
+                cardText = gameState.lg.cardLuck; 
+                break;
+              case "questionForPlayer":
+                cardClasses.push("card-question");
+                cardText = gameState.lg.cardQuestion; 
+                if (item.random) {
+                  cardClasses.push("card-random");
+                  icon = "fa-dice"; // Icono para preguntas aleatorias
+                  animation = "card-animate-rotate";
+                } else {
+                  icon = "fa-user"; // Icono para preguntas normales
+                }
                 break;
             }
-            card.classList.add(cardClass);
-            card.textContent = cardText;
+
+            // Añadir todas las clases al elemento
+            cardClasses.forEach(cls => card.classList.add(cls));
+            if (animation) card.classList.add(animation);
+            
+            // Crear contenido de la carta con icono
+            card.innerHTML = `
+              <div class="card-icon">
+                <i class="fas ${icon}"></i>
+              </div>
+              <div class="card-text">${cardText}</div>
+            `;
+            
             wheelStrip.appendChild(card);
           });
         };
@@ -521,7 +575,29 @@
             confirmResultBtn.classList.add("hidden"); // Oculta el botón de listo
             chosenPlayerHeader.textContent = gameState.lg.reSpinHeader; // Cambia la cabecera
             return; // Salir para no ejecutar la lógica común de abajo
-          } else {
+          } else if (item.type === "questionForPlayer") { // NUEVO: Manejar la carta de pregunta para un jugador
+              const questionText = item.text;
+              const playersAvailable = gameState.players.filter(
+                  (p) => p.name !== currentPlayer.name
+              );
+              let playerToAnswer;
+              if (item.random && playersAvailable.length > 0) {
+                  // Si la pregunta es de tipo random
+                  playerToAnswer = playersAvailable[
+                      Math.floor(Math.random() * playersAvailable.length)
+                  ];
+                  resultText.innerHTML = `${playerToAnswer.name}, ${gameState.lg.chosetoRespond} <br> "${questionText}"`;
+                  resultContainer.classList.remove("hidden");
+                  confirmResultBtn.classList.remove("hidden");
+                  spinBtn.classList.add("hidden");
+              } else if (playersAvailable.length > 0) {
+                  // Si no es random, permite que el jugador elija a alguien
+                  resultText.innerHTML = `${currentPlayer.name}, ${gameState.lg.playerchoose} <br> "${questionText}"`;
+                  resultContainer.classList.remove("hidden");
+                  confirmResultBtn.classList.remove("hidden");
+                  spinBtn.classList.add("hidden");
+         }
+        }else {
             // Para otros tipos de ítems (minigame, etc.)
             resultText.textContent = resultString;
             resultContainer.classList.remove("hidden");
@@ -550,6 +626,12 @@
             gameState.minigames,
             (item) => item.text
           );
+          renderEditableList(
+            "answerQuestions",
+            questionsOtherList,
+            gameState.answerQuestions,
+            (item) => item.text
+          );
         };
 
         // Crea un elemento de lista editable para la configuración
@@ -567,6 +649,10 @@
               icon = item.requiresOppositeGender
                 ? `<i class="fas fa-venus-mars text-pink-400"></i>`
                 : `<i class="fa-solid fa-people-group text-blue-400"></i>`;
+            }else if (type === "answerQuestions") {
+              icon = item.random 
+                ? `<i class="fas fa-dice text-yellow-400"></i>` 
+                : ``;
             }
             listItem.innerHTML = `<div class="flex-1 flex items-center gap-3"><p class="break-all">${textExtractor(
               item
@@ -606,6 +692,20 @@
             minigameFormTitle.textContent = gameState.lg.editMinigame;
             minigameInput.value = gameState.minigames[index].text;
             minigameFormButtons.innerHTML = `<button id="update-minigame-btn" class="btn btn-primary flex-1">${gameState.lg.update}</button><button type="button" id="cancel-edit-btn" class="btn btn-secondary flex-1">${gameState.lg.cancel}</button>`;
+          } else if (type === "answerQuestions") { // NUEVO: Configura el formulario para las nuevas preguntas
+              const question = gameState.answerQuestions[index];
+              questionsOtherFormTitle.textContent = gameState.lg.editQuestion;
+              questionsOtherInput.value = question.text;
+
+              document.querySelectorAll('input[name="requiresQuestion"]').forEach(radio => {
+              radio.checked = false;
+            });
+            const valueToSet = question.random ? "true" : "false";
+            document.querySelector(`input[name="requiresQuestion"][value="${valueToSet}"]`).checked = true;
+            
+            questionsOtherFormButtons.innerHTML = `<button id="update-question1-btn" 
+            class="btn btn-primary flex-1">${gameState.lg.update}</button><button type="button" 
+            id="cancel-edit-btn" class="btn btn-secondary flex-1">${gameState.lg.cancel}</button>`; 
           }
         };
 
@@ -624,6 +724,12 @@
           minigameFormTitle.textContent = gameState.lg.addMinigame;
           minigameInput.value = "";
           minigameFormButtons.innerHTML = `<button id="add-minigame-btn" class="btn btn-secondary flex-1">${gameState.lg.add}</button>`;
+          questionsOtherFormTitle.textContent = gameState.lg.addQuestion;
+          questionsOtherInput.value = "";
+          document.querySelector(
+              'input[name="requiresQuestion"][value="false"]'
+          ).checked = true;
+          questionsOtherFormButtons.innerHTML = `<button id="add-question1-btn" class="btn btn-secondary flex-1">${gameState.lg.add}</button>`;
         };
 
         // Muestra un modal de confirmación
@@ -759,6 +865,10 @@
             const handleUpdate = (type, index, newText, options) => {
               const dataArray = gameState[type];
               if (type === "questions") dataArray[index] = newText;
+              else if (type === "answerQuestions") {
+                dataArray[index].text = newText;
+                dataArray[index].random = options.random; // Actualizar propiedad random
+              }
               else {
                 dataArray[index].text = newText;
                 if (options) {
@@ -778,7 +888,12 @@
               if (!text) return;
               const dataArray = gameState[type];
               if (type === "questions") dataArray.push(text);
-              else {
+               else if (type === "answerQuestions") {
+                  dataArray.push({
+                    text,
+                    random: options.random // Guardar propiedad random
+                  });
+                } else  {
                 const newItem = { text };
                 if (options) {
                   newItem.requiresOppositeGender =
@@ -800,6 +915,9 @@
               } else if (type === "minigames") {
                 minigameInput.value = "";
                 minigameInput.focus();
+              } else if (type === "answerQuestions") {
+                questionsOtherInput.value = "";
+                questionsOtherInput.focus();
               }
             };
 
@@ -847,6 +965,18 @@
                   ).value,
                 }
               );
+            else if (id === "add-question1-btn")
+                handleAdd("answerQuestions", questionsOtherInput.value.trim(), {
+                    random: document.querySelector(
+                        'input[name="requiresQuestion"]:checked'
+                    ).value === "true",
+                });
+            else if (id === "update-question1-btn")
+                handleUpdate("answerQuestions", gameState.editing.index, questionsOtherInput.value.trim(), {
+                    random: document.querySelector(
+                        'input[name="requiresQuestion"]:checked'
+                    ).value === "true",
+                });
             else if (id === "add-minigame-btn")
               handleAdd("minigames", minigameInput.value.trim());
             else if (id === "update-minigame-btn")
@@ -867,6 +997,7 @@
                 deleteBtn.dataset.type,
                 parseInt(deleteBtn.dataset.index)
               );
+            
           });
 
         // Listener para eliminar reglas activas individualmente
@@ -906,6 +1037,10 @@
             localStorage.removeItem(
               `drinkUpActiveRules_${gameState.currentLanguage}`
             );
+            localStorage.removeItem(`drinkUpAnswerQuestions_${gameState.currentLanguage}`
+
+            );
+            
             changeLanguage(gameState.currentLanguage); // Recarga todo desde defaults para el idioma actual
             renderSettings();
             resetForms();
