@@ -8,7 +8,7 @@ export const useStore = create(
     (set, get) => ({
       language: 'es',
       players: [],
-      playerQueue: [],
+      playerQueue: [], // Cola para manejar turnos sin repetición
       gameMode: 'roulette',
       isHotMode: false,
 
@@ -18,7 +18,7 @@ export const useStore = create(
       
       addPlayer: (name, gender) => set((state) => ({
         players: [...state.players, { name, gender, id: Math.random().toString() }],
-        playerQueue: [] // Resetear cola al cambiar jugadores
+        playerQueue: [] // Reiniciar cola al cambiar jugadores
       })),
       
       removePlayer: (id) => set((state) => ({
@@ -28,14 +28,17 @@ export const useStore = create(
 
       getText: () => CONTENT[get().language],
 
+      // Esta es la función que daba error, asegúrate de extraerla correctamente
       getFilteredContent: (mode, subType = null) => {
         const state = get();
         const rawData = CONTENT[state.language];
         let items = [];
+
         if (mode === 'roulette') items = rawData.roulette;
         else if (mode === 'never') items = rawData.never;
         else if (mode === 'truthOrDare') items = rawData.truthOrDare[subType];
 
+        // Filtro picante
         return state.isHotMode ? items : items.filter(i => i.intensity !== 'hot');
       },
 
@@ -43,16 +46,19 @@ export const useStore = create(
       getNextPlayer: () => {
         const state = get();
         let queue = [...state.playerQueue];
+
         if (queue.length === 0) {
-          if (state.players.length === 0) return { name: 'Jugador' };
+          if (state.players.length === 0) return { name: 'Jugador', gender: 'male' };
+          // Mezclamos a todos los jugadores para empezar una nueva ronda
           queue = [...state.players].sort(() => Math.random() - 0.5);
         }
+
         const next = queue.pop();
         set({ playerQueue: queue });
         return next;
       },
 
-      // Busca una "víctima" aleatoria que no sea el jugador actual
+      // Busca una "víctima" aleatoria distinta al jugador actual
       getTargetPlayerName: (currentPlayerName) => {
         const others = get().players.filter(p => p.name !== currentPlayerName);
         if (others.length === 0) return "alguien";
@@ -62,7 +68,6 @@ export const useStore = create(
     {
       name: 'drink-up-storage',
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({ players: state.players, isHotMode: state.isHotMode, language: state.language }),
     }
   )
 );

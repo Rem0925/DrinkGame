@@ -1,25 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, Vibration, Animated as RNAnimated, Dimensions } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, Vibration, Animated as RNAnimated } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../store/store';
 import Roulette from '../components/Roulette';
 import SwipeCard from '../components/SwipeCard';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-
-const { width } = Dimensions.get('window');
+import Animated, { FadeIn, FadeOut, ScaleInCenter } from 'react-native-reanimated';
 
 export default function GameScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
   const { gameMode, getText, getNextPlayer, getFilteredContent, isHotMode, getTargetPlayerName } = useStore();
   const text = getText();
   const rouletteRef = useRef();
 
   const [currentPlayer, setCurrentPlayer] = useState({ name: '' });
-  const [phase, setPhase] = useState('lobby'); // lobby | action | result
+  const [phase, setPhase] = useState('lobby'); // lobby -> action -> result
   const [currentCard, setCurrentCard] = useState(null);
   const [truthOrDareSelection, setTruthOrDareSelection] = useState(null);
   const [neverDeck, setNeverDeck] = useState([]);
-  const scaleAnim = useRef(new RNAnimated.Value(1)).current;
 
   useEffect(() => {
     if (gameMode === 'never') initializeNeverDeck();
@@ -28,9 +27,8 @@ export default function GameScreen({ navigation }) {
 
   const initializeNeverDeck = () => {
     const content = getFilteredContent('never');
-    const shuffled = [...content].sort(() => Math.random() - 0.5);
-    setNeverDeck(shuffled);
-    loadNextNeverCard(shuffled);
+    setNeverDeck([...content].sort(() => Math.random() - 0.5));
+    loadNextNeverCard();
   };
 
   const processText = (item, activePlayerName) => {
@@ -48,10 +46,6 @@ export default function GameScreen({ navigation }) {
     setCurrentPlayer(nextP);
     setPhase('lobby');
     setCurrentCard(null);
-    RNAnimated.sequence([
-      RNAnimated.timing(scaleAnim, { toValue: 1.2, duration: 200, useNativeDriver: true }),
-      RNAnimated.timing(scaleAnim, { toValue: 1, duration: 200, useNativeDriver: true })
-    ]).start();
   };
 
   const onRouletteStop = (item) => {
@@ -60,96 +54,101 @@ export default function GameScreen({ navigation }) {
     Vibration.vibrate([0, 50, 50]);
   };
 
-  const loadNextNeverCard = (deckOverride = null) => {
-    let currentDeck = deckOverride || neverDeck;
-    if (currentDeck.length === 0) {
-      currentDeck = [...getFilteredContent('never')].sort(() => Math.random() - 0.5);
-    }
-    const nextCard = currentDeck.pop();
-    setNeverDeck([...currentDeck]);
+  const loadNextNeverCard = () => {
     const nextP = getNextPlayer();
     setCurrentPlayer(nextP);
-    setCurrentCard(processText({ ...nextCard, color: '#ec4899', id: Math.random() }, nextP.name));
-  };
-
-  const handleChoice = (type) => {
-    const content = getFilteredContent('truthOrDare', type);
+    const content = getFilteredContent('never');
     const random = content[Math.floor(Math.random() * content.length)];
-    setTruthOrDareSelection({ type, card: processText(random, currentPlayer.name) });
-    setPhase('result');
+    const dynamicItem = processText(random, nextP.name);
+    setCurrentCard({ ...dynamicItem, id: Math.random(), color: '#ec4899' });
   };
 
-  const bgColors = isHotMode ? ['#450a0a', '#111827'] : ['#111827', '#1e1b4b'];
-
-  if (phase === 'lobby' && gameMode !== 'never') {
-    return (
-      <View style={styles.lobbyContainer}>
-        <LinearGradient colors={bgColors} style={StyleSheet.absoluteFill} />
-        <Text style={styles.lobbyLabel}>TURNO DE</Text>
-        <RNAnimated.Text style={[styles.lobbyPlayer, { transform: [{ scale: scaleAnim }] }]}>
-          {currentPlayer?.name}
-        </RNAnimated.Text>
-        <TouchableOpacity style={styles.lobbyBtn} onPress={() => setPhase('action')}>
-          <Text style={styles.lobbyBtnTxt}>¡ESTOY LISTO!</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  const bgColors = isHotMode ? ['#450a0a', '#0f172a'] : ['#132f59', '#0f172a'];
 
   return (
     <LinearGradient colors={bgColors} style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
+      <View style={[styles.safeArea, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+        
+        {/* HEADER PULIDO */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}><FontAwesome5 name="times" size={20} color="white" /></TouchableOpacity>
-          <Text style={styles.modeTitle}>{text.ui.modes[gameMode]?.title}</Text>
-          <View style={styles.turnBadge}><Text style={styles.turnText}>{currentPlayer?.name}</Text></View>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+            <FontAwesome5 name="times" size={20} color="white" />
+          </TouchableOpacity>
+          <View style={styles.turnBadge}>
+            <Text style={styles.turnLabel}>TURNO:</Text>
+            <Text style={styles.turnName}>{currentPlayer?.name}</Text>
+          </View>
         </View>
 
-        {gameMode === 'roulette' && (
-          <View style={styles.centerContent}>
-            {phase === 'action' && (
-              <><Roulette ref={rouletteRef} items={getFilteredContent('roulette')} onStop={onRouletteStop} />
-              <TouchableOpacity style={styles.actionBtn} onPress={() => rouletteRef.current?.spin()}><Text style={styles.actionBtnTxt}>{text.ui.actions.spin}</Text></TouchableOpacity></>
-            )}
-            <Modal visible={phase === 'result'} transparent animationType="slide">
-              <View style={styles.modalOverlay}>
-                <View style={[styles.modalCard, {borderColor: currentCard?.color}]}>
-                  <Text style={styles.modalTitle}>{currentPlayer?.name}, TU DESTINO:</Text>
-                  <Text style={styles.modalResult}>{currentCard?.text}</Text>
-                  <TouchableOpacity style={styles.modalBtn} onPress={nextTurn}><Text style={styles.modalBtnTxt}>{text.ui.actions.next}</Text></TouchableOpacity>
-                </View>
-              </View>
-            </Modal>
-          </View>
-        )}
+        {/* FASES DEL JUEGO CON GUÍAS */}
+        <View style={styles.mainContent}>
+          {phase === 'lobby' && gameMode !== 'never' && (
+            <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.centerContent}>
+              <Text style={styles.guideText}>¿Preparado, {currentPlayer?.name}?</Text>
+              <TouchableOpacity style={styles.mainBtn} onPress={() => setPhase('action')}>
+                <Text style={styles.mainBtnTxt}>¡DALE!</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          )}
 
-        {gameMode === 'never' && (
-          <View style={styles.centerContent}>
-            <Text style={styles.readerHint}>Lee en voz alta: {currentPlayer?.name}</Text>
-            <View style={styles.deckArea}>
-              {currentCard && <SwipeCard key={currentCard.id} item={currentCard} onSwipeComplete={loadNextNeverCard} />}
+          {phase === 'action' && gameMode === 'roulette' && (
+            <Animated.View entering={FadeIn} style={styles.centerContent}>
+              <Text style={styles.hintText}>Pulsa para girar la rueda</Text>
+              <Roulette ref={rouletteRef} items={getFilteredContent('roulette')} onStop={onRouletteStop} />
+              <TouchableOpacity style={styles.spinBtn} onPress={() => rouletteRef.current?.spin()}>
+                <Text style={styles.spinBtnTxt}>{text.ui.actions.spin}</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          )}
+
+          {gameMode === 'never' && (
+            <View style={styles.centerContent}>
+              <Text style={styles.hintText}>Desliza la carta al terminar</Text>
+              <View style={styles.deckArea}>
+                {currentCard && <SwipeCard key={currentCard.id} item={currentCard} onSwipeComplete={loadNextNeverCard} />}
+              </View>
             </View>
-          </View>
-        )}
+          )}
 
-        {gameMode === 'truthOrDare' && (
-          <View style={styles.centerContent}>
-            {phase === 'action' && (
-              <View style={styles.row}>
-                <TouchableOpacity style={[styles.choiceCard, {backgroundColor: '#3b82f6'}]} onPress={() => handleChoice('truth')}><Text style={styles.choiceTxt}>{text.ui.actions.truth}</Text></TouchableOpacity>
-                <TouchableOpacity style={[styles.choiceCard, {backgroundColor: '#ef4444'}]} onPress={() => handleChoice('dare')}><Text style={styles.choiceTxt}>{text.ui.actions.dare}</Text></TouchableOpacity>
-              </View>
-            )}
-            {phase === 'result' && (
-              <View style={[styles.modalCard, {borderColor: '#fbbf24', borderWidth: 3}]}>
-                <Text style={styles.modalTitle}>{truthOrDareSelection.type.toUpperCase()}</Text>
-                <Text style={styles.modalResult}>{truthOrDareSelection.card.text}</Text>
-                <TouchableOpacity style={styles.modalBtn} onPress={nextTurn}><Text style={styles.modalBtnTxt}>Siguiente</Text></TouchableOpacity>
-              </View>
-            )}
+          {/* VERDAD O RETO */}
+          {phase === 'action' && gameMode === 'truthOrDare' && (
+            <View style={styles.row}>
+              <TouchableOpacity style={[styles.choiceCard, {backgroundColor: '#3b82f6'}]} onPress={() => {
+                const content = getFilteredContent('truthOrDare', 'truth');
+                const random = content[Math.floor(Math.random() * content.length)];
+                setTruthOrDareSelection({ type: 'VERDAD', card: processText(random, currentPlayer.name) });
+                setPhase('result');
+              }}>
+                <FontAwesome5 name="comment-dots" size={40} color="white" />
+                <Text style={styles.choiceTxt}>VERDAD</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.choiceCard, {backgroundColor: '#ef4444'}]} onPress={() => {
+                const content = getFilteredContent('truthOrDare', 'dare');
+                const random = content[Math.floor(Math.random() * content.length)];
+                setTruthOrDareSelection({ type: 'RETO', card: processText(random, currentPlayer.name) });
+                setPhase('result');
+              }}>
+                <FontAwesome5 name="fire-alt" size={40} color="white" />
+                <Text style={styles.choiceTxt}>RETO</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+        {/* MODAL DE RESULTADOS ESTILO CARTA ORIGINAL */}
+        <Modal visible={phase === 'result'} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <Animated.View entering={ScaleInCenter} style={[styles.resultCard, { borderColor: currentCard?.color || '#3b82f6' }]}>
+               <Text style={styles.resultType}>{truthOrDareSelection?.type || 'RESULTADO'}</Text>
+               <Text style={styles.resultText}>{currentCard?.text || truthOrDareSelection?.card?.text}</Text>
+               <TouchableOpacity style={styles.continueBtn} onPress={nextTurn}>
+                 <Text style={styles.continueBtnTxt}>CONTINUAR</Text>
+               </TouchableOpacity>
+            </Animated.View>
           </View>
-        )}
-      </SafeAreaView>
+        </Modal>
+
+      </View>
     </LinearGradient>
   );
 }
@@ -157,27 +156,27 @@ export default function GameScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   safeArea: { flex: 1 },
-  lobbyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  lobbyLabel: { color: '#6b7280', fontSize: 20, letterSpacing: 5, marginBottom: 10 },
-  lobbyPlayer: { color: 'white', fontSize: 40, fontWeight: '900', marginBottom: 50 },
-  lobbyBtn: { backgroundColor: '#3b82f6', paddingHorizontal: 40, paddingVertical: 20, borderRadius: 30 },
-  lobbyBtnTxt: { color: 'white', fontSize: 18, fontWeight: 'bold' },
   header: { flexDirection: 'row', alignItems: 'center', padding: 20, justifyContent: 'space-between' },
-  modeTitle: { color: 'white', fontSize: 18, fontWeight: 'bold' },
-  turnBadge: { backgroundColor: 'rgba(255,255,255,0.1)', padding: 8, borderRadius: 20 },
-  turnText: { color: 'white', fontWeight: 'bold' },
-  centerContent: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  actionBtn: { backgroundColor: 'white', paddingHorizontal: 50, paddingVertical: 15, borderRadius: 30, marginTop: 30 },
-  actionBtnTxt: { color: 'black', fontWeight: '900', fontSize: 18 },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', alignItems: 'center', padding: 20 },
-  modalCard: { backgroundColor: '#1f2937', width: '100%', padding: 30, borderRadius: 20, alignItems: 'center', borderWidth: 2 },
-  modalTitle: { color: '#9ca3af', fontSize: 14, marginBottom: 20 },
-  modalResult: { color: 'white', fontSize: 28, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 },
-  modalBtn: { backgroundColor: '#10b981', paddingHorizontal: 40, paddingVertical: 15, borderRadius: 15, width: '100%', alignItems: 'center' },
-  modalBtnTxt: { color: 'white', fontWeight: 'bold' },
-  deckArea: { width: '100%', height: 450, justifyContent: 'center', alignItems: 'center' },
-  readerHint: { color: '#9ca3af', marginBottom: 10 },
-  row: { flexDirection: 'row', gap: 20 },
-  choiceCard: { width: 140, height: 200, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
-  choiceTxt: { color: 'white', fontWeight: '900', fontSize: 18 }
+  backBtn: { width: 45, height: 45, borderRadius: 15, backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center' },
+  turnBadge: { backgroundColor: '#1e293b', paddingVertical: 8, paddingHorizontal: 15, borderRadius: 15, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)' },
+  turnLabel: { color: '#64748b', fontSize: 10, fontWeight: '900' },
+  turnName: { color: 'white', fontWeight: '900', fontSize: 16 },
+  mainContent: { flex: 1, justifyContent: 'center' },
+  centerContent: { alignItems: 'center', padding: 20 },
+  guideText: { color: 'white', fontSize: 28, fontWeight: '900', marginBottom: 30, textAlign: 'center' },
+  hintText: { color: '#64748b', fontSize: 14, fontWeight: 'bold', marginBottom: 20, textTransform: 'uppercase', letterSpacing: 1 },
+  mainBtn: { backgroundColor: '#3b82f6', paddingHorizontal: 50, paddingVertical: 20, borderRadius: 20, elevation: 5 },
+  mainBtnTxt: { color: 'white', fontWeight: '900', fontSize: 20 },
+  spinBtn: { backgroundColor: 'white', paddingHorizontal: 60, paddingVertical: 18, borderRadius: 20, marginTop: 40 },
+  spinBtnTxt: { color: '#0f172a', fontWeight: '900', fontSize: 18 },
+  deckArea: { width: '100%', height: 420, alignItems: 'center', justifyContent: 'center' },
+  row: { flexDirection: 'row', justifyContent: 'center', gap: 20 },
+  choiceCard: { width: 140, height: 200, borderRadius: 25, justifyContent: 'center', alignItems: 'center', gap: 15, elevation: 10 },
+  choiceTxt: { color: 'white', fontWeight: '900', fontSize: 18 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(15, 23, 42, 0.95)', justifyContent: 'center', alignItems: 'center', padding: 30 },
+  resultCard: { backgroundColor: '#1e293b', width: '100%', padding: 40, borderRadius: 30, borderWidth: 4, alignItems: 'center' },
+  resultType: { color: '#64748b', fontWeight: '900', fontSize: 14, marginBottom: 20, letterSpacing: 2 },
+  resultText: { color: 'white', fontSize: 26, fontWeight: '900', textAlign: 'center', marginBottom: 40, lineHeight: 35 },
+  continueBtn: { backgroundColor: '#10b981', paddingVertical: 18, paddingHorizontal: 40, borderRadius: 20, width: '100%', alignItems: 'center' },
+  continueBtnTxt: { color: 'white', fontWeight: '900', fontSize: 16 }
 });
